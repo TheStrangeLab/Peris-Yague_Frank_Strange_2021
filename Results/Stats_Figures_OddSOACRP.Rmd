@@ -105,20 +105,20 @@ Uncorrected t-tests of the main effects and the interaction:
 
 ```{r echo=FALSE}
 RecPFR.pwc<-PFR %>%
-  pairwise_t_test(pfr~recall, paired=TRUE, p.adjust.method='none') %>%
-  select(-df,-statistic) #remove details 
+  pairwise_t_test(pfr~recall, paired=TRUE, p.adjust.method='none') #%>%
+  #select(-df,-statistic) #remove details 
 RecPFR.pwc  
 
 sp.pwc<-PFR %>%
-  pairwise_t_test(pfr~sp, paired=TRUE, p.adjust.method='none') %>%
-  select(-df,-statistic) #remove details 
+  pairwise_t_test(pfr~sp, paired=TRUE, p.adjust.method='none') #%>%
+  #select(-df,-statistic) #remove details 
 sp.pwc
   
 
 RecxSp.pwc<-PFR %>%
   group_by(sp)%>%
-  pairwise_t_test(pfr~recall, paired=TRUE, p.adjust.method='none') %>%
-  select(-df,-statistic) #remove details 
+  pairwise_t_test(pfr~recall, paired=TRUE, p.adjust.method='none') #%>%
+  #select(-df,-statistic) #remove details 
 RecxSp.pwc
 ```
 
@@ -153,6 +153,10 @@ RR.plt<-ggplot(RR,aes(x=oddballtype, y=relativerecall, fill=oddballtype))+
   labs(x='Oddball Type', y='Relative Recall Position')
   
 RR.plt
+
+wilcox.test(relativerecall~oddballtype, data=RR, paired=FALSE)
+
+RRplot
 ```
 
 ## E and E-1 recall positions
@@ -162,7 +166,7 @@ Therefore:
 
 E - E-1 ---> a + result (forwards i.e E-1 to E) vs. a - result (backwards i.e E to E-1).
 
-In conclusion, when emotional oddballs were recalled early on, the neutral items preceding them (E-1) were recalled after recalling E. However, when emotional oddballs are recalled later on, recall goes forwards i.e E --> E-1. 
+In conclusion, when emotional oddballs were recalled early on, the neutral items preceding them (E-1) were recalled after recalling E (E to E-1). However, when emotional oddballs are recalled later on, recall goes forwards i.e E-1-->E. 
 
 ```{r echo=FALSE, warning=FALSE, message=FALSE}
 setwd("/Users/albaperis/Desktop/Alba/PhD UPM /Von Restroff WP3/Paper_github/Odd_SOA_CRP/Raw_Results")
@@ -240,6 +244,7 @@ recall.aov<-anova_test(
   within=c(oddballtype,wordposition)
 )
 recall.aov
+get_anova_table(recall.aov)
 ```
 
 Follow-up uncorrected t-tests showed that the oddball was better recalled than words in any of the other serial positions and that emotional oddballs were better recalled than perceptual oddballs. 
@@ -247,16 +252,16 @@ Follow-up uncorrected t-tests showed that the oddball was better recalled than w
 ```{r echo=FALSE}
 WordPosition.pwc<-recall %>%
   #group_by(oddballtype)%>%
-  pairwise_t_test(normrec~wordposition, paired=TRUE, p.adjust.method='none') %>%
-  select(-df,-statistic) #remove details 
+  pairwise_t_test(normrec~wordposition, paired=TRUE, p.adjust.method='none') #%>%
+  #select(-df,-statistic) #remove details 
 WordPosition.pwc  
 
 #Interaction oddballtype x word position
 
 WordPositionxOdd.pwc<-recall %>%
   group_by(wordposition)%>%
-  pairwise_t_test(normrec~oddballtype, paired=TRUE, p.adjust.method='none') %>%
-  select(-df,-statistic) #remove details 
+  pairwise_t_test(normrec~oddballtype, paired=TRUE, p.adjust.method='none')# %>%
+  #select(-df,-statistic) #remove details 
 WordPositionxOdd.pwc
 ```
 
@@ -384,6 +389,7 @@ recallSOA.aov<-anova_test(
 )
 
 recallSOA.aov
+get_anova_table(recallSOA.aov)
 ```
 
 We followed-up with uncorrected post-hoc t-tests.
@@ -396,22 +402,22 @@ We followed-up with uncorrected post-hoc t-tests.
 #Post-hoc tests
 #Main effect of word position 
 WordPositionSOA.pwc<-recallSOA %>%
-  pairwise_t_test(normrec~wordposition, paired=TRUE, p.adjust.method='none') %>%
-  select(-df,-statistic) #remove details 
+  pairwise_t_test(normrec~wordposition, paired=TRUE, p.adjust.method='none') #%>%
+  #select(-df,-statistic) #remove details 
 WordPositionSOA.pwc  
 
 #Main effect of SOA
 SOA.pwc<-recallSOA %>%
-  pairwise_t_test(normrec~SOA, paired=TRUE, p.adjust.method='none') %>%
-  select(-df,-statistic) #remove details 
+  pairwise_t_test(normrec~SOA, paired=TRUE, p.adjust.method='none') #%>%
+  #select(-df,-statistic) #remove details 
 SOA.pwc
 
 #Interaction oddballtype x word position
 
 WordPositionxOddSOA.pwc<-recallSOA %>%
   group_by(wordposition)%>%
-  pairwise_t_test(normrec~oddballtype, paired=TRUE, p.adjust.method='none') %>%
-  select(-df,-statistic) #remove details 
+  pairwise_t_test(normrec~oddballtype, paired=TRUE, p.adjust.method='none') #%>%
+  #select(-df,-statistic) #remove details 
 WordPositionxOddSOA.pwc
 ```
 
@@ -624,6 +630,7 @@ CRPall.aov<-anova_test(
   within=c(oddballtype,wordposition,direction)
 )
 CRPall.aov
+get_anova_table(CRPall.aov)
 ```
 
 Follow up uncorrected t-tests showed:
@@ -634,22 +641,22 @@ Follow up uncorrected t-tests showed:
 ```{r echo=FALSE}
 #Main effect of oddballtype
 CRPoddballtype.pwc<-CRPall %>%
-  pairwise_t_test(CRP~oddballtype, paired=TRUE, p.adjust.method='none') %>%
-  select(-df,-statistic) #remove details 
+  pairwise_t_test(CRP~oddballtype, paired=TRUE, p.adjust.method='none') #%>%
+  #select(-df,-statistic) #remove details 
 CRPoddballtype.pwc
 
 #Main effect of word position
 CRPwordposition.pwc<-CRPall %>%
-  pairwise_t_test(CRP~wordposition, paired=TRUE, p.adjust.method='none') %>%
-  select(-df,-statistic) #remove details 
+  pairwise_t_test(CRP~wordposition, paired=TRUE, p.adjust.method='none') #%>%
+  #select(-df,-statistic) #remove details 
 CRPwordposition.pwc
 
 #Interaction direction x word position
 
 DirectionxWordPosition.pwc<-CRPall %>%
   group_by(wordposition)%>%
-  pairwise_t_test(CRP~direction, paired=TRUE, p.adjust.method='none') %>%
-  select(-df,-statistic) #remove details 
+  pairwise_t_test(CRP~direction, paired=TRUE, p.adjust.method='none') #%>%
+  #select(-df,-statistic) #remove details 
 DirectionxWordPosition.pwc
 ```
 
@@ -708,6 +715,7 @@ RvF.aov<-anova_test(
   within=c(oddballtype,wordposition,direction,recall)
 )
 RvF.aov
+get_anova_table(RvF.aov)
 ```
 
 Post-hoc uncorrected t-tests showed:
@@ -719,22 +727,22 @@ Post-hoc uncorrected t-tests showed:
 ```{r echo=FALSE}
 #Main effect of word position
 RvFwordposition.pwc<-RvF %>%
-  pairwise_t_test(CRP~wordposition, paired=TRUE, p.adjust.method='none') %>%
-  select(-df,-statistic) #remove details 
+  pairwise_t_test(CRP~wordposition, paired=TRUE, p.adjust.method='none') #%>%
+#select(-df,-statistic) #remove details 
 RvFwordposition.pwc
 
 #Main effect of recall 
 RvFrecall.pwc<-RvF %>%
-  pairwise_t_test(CRP~recall, paired=TRUE, p.adjust.method='none') %>%
-  select(-df,-statistic) #remove details 
+  pairwise_t_test(CRP~recall, paired=TRUE, p.adjust.method='none') #%>%
+  #select(-df,-statistic) #remove details 
 RvFrecall.pwc
 
 #Interaction direction x word position
 
 DirectionxWordPosition.RvF.pwc<-RvF %>%
   group_by(wordposition)%>%
-  pairwise_t_test(CRP~direction, paired=TRUE, p.adjust.method='none') %>%
-  select(-df,-statistic) #remove details 
+  pairwise_t_test(CRP~direction, paired=TRUE, p.adjust.method='none')#%>%
+  #select(-df,-statistic) #remove details 
 DirectionxWordPosition.RvF.pwc
 ```
 
@@ -794,6 +802,7 @@ TF.aov<-anova_test(
   within=c(oddballtype,wordposition,direction,transition)
 )
 TF.aov
+get_anova_table(TF.aov)
 ```
 
 Post-hoc uncorrected t-tests showed:
@@ -805,16 +814,47 @@ Post-hoc uncorrected t-tests showed:
 ```{r echo=FALSE}
 # Main effect of word position
 TFWordPosition.pwc<-TFCRP %>%
-  pairwise_t_test(CRP~wordposition, paired=TRUE, p.adjust.method='none') %>%
-  select(-df,-statistic) #remove details 
+  pairwise_t_test(CRP~wordposition, paired=TRUE, p.adjust.method='none') #%>%
+  #select(-df,-statistic) #remove details 
 TFWordPosition.pwc
 
 #Interaction oddballtype x transition
 
 OddTypexTransition.TF.pwc<-TFCRP %>%
   group_by(transition)%>%
-  pairwise_t_test(CRP~oddballtype, paired=TRUE, p.adjust.method='none') %>%
-  select(-df,-statistic) #remove details 
+  pairwise_t_test(CRP~oddballtype, paired=TRUE, p.adjust.method='none') #%>%
+  #select(-df,-statistic) #remove details 
 OddTypexTransition.TF.pwc
+
+OddTypexTransition.TF.pwc2<-TFCRP %>%
+  group_by(oddballtype)%>%
+  pairwise_t_test(CRP~transition, paired=TRUE, p.adjust.method='none') #%>%
+  #select(-df,-statistic) #remove details 
+
+OddTypexTransition.TF.pwc2
 ```
+
+## Correlation between lag +1 after and E-1 Normalized recall ###
+
+# Get the E-1 recall values 
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+em1_corr<-as.data.frame(subset(recall, oddballtype=='E' & wordposition=='m1'))
+lag_corr<-as.data.frame(subset(TFCRP, oddballtype=='E' & transition=='from' & direction=='Forwards' & wordposition=='1'))
+
+corrplot<-as.data.frame(cbind(em1_corr$normrec,lag_corr$CRP))
+
+corrplt<-ggplot(corrplot, aes(x=V1, y=V2))+
+  geom_point(shape=18, color='darksalmon')+
+  geom_smooth(method=lm, se=FALSE, color='lightskyblue2')+
+  ggtitle('Correlation of E-1 normalized recall and transitions from E Odd (lag +1)')+
+  ylab('Lag +1 transitions from E Odd')+
+  xlab('E-1 Normalized Recall')
+
+corrplt
+
+cor.test(corrplot$V1, corrplot$V2,  method = "spearman", use = "complete.obs")
+
+
+```
+
 
