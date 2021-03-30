@@ -24,7 +24,7 @@ for sub=subjects
     load cpp
     load listtype
     %% !! THE SOA number needs to be changed here 
-    SOA=6;
+    SOA=4;
    
     emotion_index = find((rem(listtype,10)==SOA&listtype<20)); %find emotional lists
     percept_index = find((rem(listtype,10)==SOA&listtype>20)); %find perceptual lists
@@ -196,8 +196,14 @@ final_recall(index,1:11)=[sub E_2 E_1 Emo A_E P_2 P_1 Per A_P C_E C_P];
 normalized_recall(index,1:9)=[sub (E_2-C_E) (E_1-C_E) (Emo-C_E) (A_E-C_E) (P_2-C_P) (P_1-C_P) (Per-C_P) (A_P-C_P)];
       
     cd ..
-    end
+end
  
+    
+%For SOA 4 recall is really bad. Check whether this is due to control
+%nouns being really well remembered. 
+
+soa4_control=mean(final_recall(:,11))
+soa4_odd=mean(final_recall(:,8))
 
 %  final_recall=array2table(final_recall, 'VariableNames',{'Subject', 'E-2', 'E-1',...
 %      'E', 'E+1', 'P-2', 'P-1', 'P', 'P+1', 'Control_Emotional', 'Control_Perceptual'});
