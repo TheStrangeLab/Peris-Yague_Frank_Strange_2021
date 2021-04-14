@@ -45,22 +45,39 @@ end
 recalldir=sortrows(recall,3);
 recalldir=recalldir(~recalldir(:,3)==0,:);
 direction=[recalldir(:,2), [recalldir(:,2)-recalldir(:,3)]];
-% figure; scatter(direction(:,1), direction(:,2))
-% xlabel('E recall position')
-% ylabel('E-1 relative to the E')
-% ax = gca;
-% ax.XAxisLocation = 'origin';
-% ax.YAxisLocation = 'origin';
-
+ figure; scatter(direction(:,1), direction(:,2))
+ xlabel('E recall position')
+ ylabel('E-1 relative to the E')
+ ax = gca;
+ ax.XAxisLocation = 'origin';
+ ax.YAxisLocation = 'origin';
 %Fit a line 
 coefficients = polyfit(direction(:,1), direction(:,2), 1);
 fitted_y = polyval(coefficients, direction(:,1));
-% hold on;
-%plot(direction(:,1), fitted_y, 'r', 'LineWidth', 3);
+ hold on;
+plot(direction(:,1), fitted_y, 'r', 'LineWidth', 3);
+
 %save for R
 diremem1=array2table(direction,'VariableNames',{'E', 'E-1'});
 cd '/Users/albaperis/Desktop/Alba/PhD UPM /Von Restroff WP3/Paper_github/Odd_SOA_CRP/Raw_Results'
 writetable(diremem1,'diremem1.csv')
+%E and E+1
+p1recalldir=sortrows(recall,4);
+p1recalldir=p1recalldir(~p1recalldir(:,4)==0,:);
+p1direction=[p1recalldir(:,2), [p1recalldir(:,2)-p1recalldir(:,4)]];
+
+figure; scatter(p1direction(:,1), p1direction(:,2))
+ xlabel('E recall position')
+ ylabel('E+1 relative to the E')
+ ax = gca;
+ ax.XAxisLocation = 'origin';
+ ax.YAxisLocation = 'origin';
+%Fit a line 
+coefficients = polyfit(p1direction(:,1), p1direction(:,2), 1);
+fitted_y = polyval(coefficients, p1direction(:,1));
+ hold on;
+plot(p1direction(:,1), fitted_y, 'r', 'LineWidth', 3);
+
 cd(dir)
 e_relative=recall(:,2)./recall(:,5);
 em1_relative=recall(:,3)./recall(:,5);

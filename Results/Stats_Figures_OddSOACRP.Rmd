@@ -57,7 +57,7 @@ pltpfr<-ggplot(pfrplot,aes(x=sp,y=mean), group=recall, color=recall)+
     labs(x='Serial Position', y='Probability of First Recall')+ 
     ggtitle('Probability of First Recall')+
     scale_color_manual(values=c('darkkhaki','cadetblue3'), 
-                     labels=c('All trials','Odd Remembered'), name='Trial Inclusion')
+                     labels=c('Odd Forgotten','Odd Remembered'), name='Oddball Recall')
 
 pltpfr
 
@@ -108,6 +108,13 @@ RecPFR.pwc<-PFR %>%
   pairwise_t_test(pfr~recall, paired=TRUE, p.adjust.method='none') #%>%
   #select(-df,-statistic) #remove details 
 RecPFR.pwc  
+
+group_by(PFR, recall) %>%
+  summarise(
+    count=n(),
+    mean=mean(pfr, na.rm=TRUE),
+    sd=sd(pfr, na.rm=TRUE)
+  )
 
 sp.pwc<-PFR %>%
   pairwise_t_test(pfr~sp, paired=TRUE, p.adjust.method='none') #%>%
@@ -208,7 +215,7 @@ recall.fig<-ggplot(recallplot, aes(fill=oddballtype, x=wordposition, y=normrec))
     labels = c("Odd-2", "Odd-1", "Odd","Odd+1")
   )+
   ggtitle('Normalized Recall')+
-  labs(x='Word Position', y='Normalized Recall')
+  labs(x='Word Position', y='Normalized Recall (- control)')
 
 recall.fig
 
@@ -348,7 +355,7 @@ recall.SOA.fig<-ggplot(recSOAplot, aes(fill=oddballtype, x=wordposition, y=normr
     labels = c("Odd-2", "Odd-1", "Odd","Odd+1")
   )+
   ggtitle('Normalized Recall by SOA')+
-  labs(x='Word Position', y='Normalized Recall')+
+  labs(x='Word Position', y='Normalized Recall (- control)')+
   facet_wrap(~ SOA, ncol=3)
 recall.SOA.fig
 ```
@@ -770,6 +777,7 @@ for (rows in 1:nrow(TFplot)){
 }
 invisible(as.data.frame(wpplot))
 TFplot$wpplot<-wpplot
+TFplot$transition<-factor(TFplot$transition, levels=c('to','from'))
 
 pltTF<-ggplot(TFplot,aes(x=wpplot,y=mean), group=oddballtype)+
   geom_line(aes(color=oddballtype)) +
