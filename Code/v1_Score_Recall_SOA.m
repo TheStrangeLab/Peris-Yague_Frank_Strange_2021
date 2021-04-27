@@ -269,3 +269,29 @@ writetable (normrec_SOA_R, 'normrec_SOA_R.csv');
 % set(gca,'XTickLabel',{'E-2','E-1','E','E+1','P-2','P-1','P','P+1'})
 % ylabel('Normalized recall')
 %  saveas(gcf, 'SOA6_v1_Fig2_FinalRecallNormalized.png');
+
+%% CALCULATE HOW MANY ITEMS ARE RECALLED PER LIST PER SOA 
+clearvars
+cd '/Users/albaperis/Desktop/Alba/PhD UPM /Von Restroff WP3/Paper_github/Odd_SOA_CRP/Code'
+
+load alldata.mat
+
+% Columns 1:14 are recalled items, column 18 is SOA
+
+data=[alldata(:,1:14) alldata(:,18)];
+data(:,1:15)=cellfun(@num2str,data(:,1:15),'UniformOutput',false);
+
+recall=double(~strcmp(data(:,1:14),'0'));
+recall=[recall str2double(data(:,15))];
+
+for i=1:length(recall);
+    total=sum(recall(i,1:14));
+    totalrec(i,1)=total;
+end 
+
+totalrec=[totalrec str2double(data(:,15))];
+totalrec=array2table(totalrec,'VariableNames',{'total_recall_list', 'SOA'});
+
+cd '/Users/albaperis/Desktop/Alba/PhD UPM /Von Restroff WP3/Paper_github/Odd_SOA_CRP/Raw_Results'
+
+writetable (totalrec,'list_recall_SOA_R.csv');

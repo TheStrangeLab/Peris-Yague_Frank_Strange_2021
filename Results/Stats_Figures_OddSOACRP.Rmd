@@ -57,7 +57,9 @@ pltpfr<-ggplot(pfrplot,aes(x=sp,y=mean), group=recall, color=recall)+
     labs(x='Serial Position', y='Probability of First Recall')+ 
     ggtitle('Probability of First Recall')+
     scale_color_manual(values=c('darkkhaki','cadetblue3'), 
-                     labels=c('Odd Forgotten','Odd Remembered'), name='Oddball Recall')
+                     labels=c('Odd Forgotten','Odd Remembered'), name='Oddball Recall')+
+  theme_light()
+  
 
 pltpfr
 
@@ -105,9 +107,12 @@ Uncorrected t-tests of the main effects and the interaction:
 
 ```{r echo=FALSE}
 RecPFR.pwc<-PFR %>%
-  pairwise_t_test(pfr~recall, paired=TRUE, p.adjust.method='none') #%>%
+  pairwise_t_test(pfr~recall, paired=TRUE, p.adjust.method='fdr') #%>%
   #select(-df,-statistic) #remove details 
 RecPFR.pwc  
+
+PFR %>%
+  cohens_d(pfr~recall, paired=TRUE)
 
 group_by(PFR, recall) %>%
   summarise(
@@ -117,16 +122,22 @@ group_by(PFR, recall) %>%
   )
 
 sp.pwc<-PFR %>%
-  pairwise_t_test(pfr~sp, paired=TRUE, p.adjust.method='none') #%>%
+  pairwise_t_test(pfr~sp, paired=TRUE, p.adjust.method='fdr') #%>%
   #select(-df,-statistic) #remove details 
 sp.pwc
+PFR %>%
+  cohens_d(pfr~sp, paired=TRUE)
   
 
 RecxSp.pwc<-PFR %>%
   group_by(sp)%>%
-  pairwise_t_test(pfr~recall, paired=TRUE, p.adjust.method='none') #%>%
+  pairwise_t_test(pfr~recall, paired=TRUE, p.adjust.method='fdr') #%>%
   #select(-df,-statistic) #remove details 
 RecxSp.pwc
+
+PFR %>%
+  group_by(sp)%>%
+  cohens_d(pfr~recall, paired=TRUE)
 ```
 
 ## Relative Recall Position
@@ -157,11 +168,14 @@ RR.plt<-ggplot(RR,aes(x=oddballtype, y=relativerecall, fill=oddballtype))+
                 size=0.5, position=position_dodge(0.9), stat='identity')+
   scale_fill_manual(values=c('thistle1','lightblue1'), labels=c('Emotional','Perceptual'), name='Oddball Type')+
   ggtitle('Relative Recall Position')+
-  labs(x='Oddball Type', y='Relative Recall Position')
+  labs(x='Oddball Type', y='Relative Recall Position')+
+  theme_light()
   
 RR.plt
 
 wilcox.test(relativerecall~oddballtype, data=RR, paired=FALSE)
+RR %>%
+  cohens_d(relativerecall~oddballtype, paired=FALSE)
 
 RRplot
 ```
@@ -215,9 +229,11 @@ recall.fig<-ggplot(recallplot, aes(fill=oddballtype, x=wordposition, y=normrec))
     labels = c("Odd-2", "Odd-1", "Odd","Odd+1")
   )+
   ggtitle('Normalized Recall')+
-  labs(x='Word Position', y='Normalized Recall (- control)')
+  labs(x='Word Position', y='Normalized Recall (- control)')+
+  theme_light()
 
-recall.fig
+
+#recall.fig
 
 ``` 
 
@@ -259,17 +275,34 @@ Follow-up uncorrected t-tests showed that the oddball was better recalled than w
 ```{r echo=FALSE}
 WordPosition.pwc<-recall %>%
   #group_by(oddballtype)%>%
-  pairwise_t_test(normrec~wordposition, paired=TRUE, p.adjust.method='none') #%>%
+  pairwise_t_test(normrec~wordposition, paired=TRUE, p.adjust.method='fdr') #%>%
   #select(-df,-statistic) #remove details 
 WordPosition.pwc  
+
+recall %>%
+  cohens_d(normrec~wordposition, paired=TRUE)
 
 #Interaction oddballtype x word position
 
 WordPositionxOdd.pwc<-recall %>%
   group_by(wordposition)%>%
-  pairwise_t_test(normrec~oddballtype, paired=TRUE, p.adjust.method='none')# %>%
+  pairwise_t_test(normrec~oddballtype, paired=TRUE, p.adjust.method='fdr')# %>%
   #select(-df,-statistic) #remove details 
 WordPositionxOdd.pwc
+
+recall %>%
+  group_by(wordposition) %>%
+  cohens_d(normrec~oddballtype, paired=TRUE)
+
+## Add p values to graph 
+WordPosition.pwc <- WordPosition.pwc %>% add_xy_position(x = "wordposition")
+
+WordPositionxOdd.pwc <- WordPositionxOdd.pwc %>% add_xy_position(x = "wordposition")
+
+recall.fig+
+  stat_pvalue_manual(WordPositionxOdd.pwc, label='p.adj.signif', inherit.aes=FALSE, hide.ns=TRUE, tip.length=0, bracket.nudge.y=-0.42)+
+  stat_pvalue_manual(WordPosition.pwc, label='p.adj.signif', inherit.aes=FALSE, hide.ns=TRUE, tip.length =0, bracket.nudge.y=-0.42)
+
 ```
 
 ## Contingency Analyses of the oddballs and oddball-1 items
@@ -356,7 +389,8 @@ recall.SOA.fig<-ggplot(recSOAplot, aes(fill=oddballtype, x=wordposition, y=normr
   )+
   ggtitle('Normalized Recall by SOA')+
   labs(x='Word Position', y='Normalized Recall (- control)')+
-  facet_wrap(~ SOA, ncol=3)
+  facet_wrap(~ SOA, ncol=3)+
+  theme_light()
 recall.SOA.fig
 ```
 
@@ -409,24 +443,60 @@ We followed-up with uncorrected post-hoc t-tests.
 #Post-hoc tests
 #Main effect of word position 
 WordPositionSOA.pwc<-recallSOA %>%
-  pairwise_t_test(normrec~wordposition, paired=TRUE, p.adjust.method='none') #%>%
+  pairwise_t_test(normrec~wordposition, paired=TRUE, p.adjust.method='fdr') #%>%
   #select(-df,-statistic) #remove details 
 WordPositionSOA.pwc  
 
+recallSOA %>%
+  cohens_d(normrec~wordposition, paired=TRUE)
+
 #Main effect of SOA
 SOA.pwc<-recallSOA %>%
-  pairwise_t_test(normrec~SOA, paired=TRUE, p.adjust.method='none') #%>%
+  pairwise_t_test(normrec~SOA, paired=TRUE, p.adjust.method='fdr') #%>%
   #select(-df,-statistic) #remove details 
 SOA.pwc
+
+recallSOA %>%
+  cohens_d(normrec~SOA, paired=TRUE)
 
 #Interaction oddballtype x word position
 
 WordPositionxOddSOA.pwc<-recallSOA %>%
   group_by(wordposition)%>%
-  pairwise_t_test(normrec~oddballtype, paired=TRUE, p.adjust.method='none') #%>%
+  pairwise_t_test(normrec~oddballtype, paired=TRUE, p.adjust.method='fdr') #%>%
   #select(-df,-statistic) #remove details 
 WordPositionxOddSOA.pwc
+
+recallSOA %>%
+  group_by(wordposition) %>%
+  cohens_d(normrec~oddballtype, paired=TRUE)
+
 ```
+
+### Total recalled items per list per SOA
+The goal of this is to check whether the total recalled items per list per SOA increases as SOA increases. 
+```{r echo=FALSE}
+setwd("/Users/albaperis/Desktop/Alba/PhD UPM /Von Restroff WP3/Paper_github/Odd_SOA_CRP/Raw_Results")
+
+listrecallSOA<-read.csv('list_recall_SOA_R.csv')
+listrecallSOA<-as.data.frame(listrecallSOA)
+
+listrecallSOAplot<-listrecallSOA %>%
+  group_by(SOA) %>%
+  get_summary_stats(total_recall_list,type='mean_se')
+
+list.recall.SOA.fig<-ggplot(data = listrecallSOAplot,mapping = aes(x = as.factor(SOA), y = mean))+
+     geom_bar(position='dodge',stat = "identity") +
+  geom_bar(position='dodge', stat='identity', fill='mistyrose2')+
+  geom_errorbar(aes(x=as.factor(SOA), ymin=mean-se, ymax=mean+se), width=0.4, color='coral1',
+                size=0.8, position=position_dodge(0.8), stat='identity')+
+    ggtitle('Number of items recalled by SOA')+
+    labs(x='Stimulus Onset Asynchronies (SOA)', y='Items recalled ')+     
+    theme_light()
+
+list.recall.SOA.fig
+```
+
 
 ## Contingency Analyses by SOA in **Emotional** Lists
 
@@ -609,11 +679,12 @@ pltCRP<-ggplot(crpplot,aes(x=wpplot,y=mean), group=oddballtype)+
         geom_line(aes(color=oddballtype)) +
         geom_point(aes(color=oddballtype)) +
         facet_wrap(~ direction, scales='free_x')+    
-        ggtitle('CRP all')+
+        #ggtitle('CRP all')+
         xlab('Lag') +
         ylab('Conditional Response Probability')+
         scale_color_manual(values=c('violetred2','turquoise2'), 
-          labels=c('Emotional','Perceptual'), name='Oddball Type')
+          labels=c('Emotional','Perceptual'), name='Oddball Type')+
+        theme_light()
                     
 pltCRP
 
@@ -648,23 +719,33 @@ Follow up uncorrected t-tests showed:
 ```{r echo=FALSE}
 #Main effect of oddballtype
 CRPoddballtype.pwc<-CRPall %>%
-  pairwise_t_test(CRP~oddballtype, paired=TRUE, p.adjust.method='none') #%>%
+  pairwise_t_test(CRP~oddballtype, paired=TRUE, p.adjust.method='fdr') #%>%
   #select(-df,-statistic) #remove details 
 CRPoddballtype.pwc
 
+CRPall %>%
+  cohens_d(CRP~oddballtype, paired=TRUE)
+
 #Main effect of word position
 CRPwordposition.pwc<-CRPall %>%
-  pairwise_t_test(CRP~wordposition, paired=TRUE, p.adjust.method='none') #%>%
+  pairwise_t_test(CRP~wordposition, paired=TRUE, p.adjust.method='fdr') #%>%
   #select(-df,-statistic) #remove details 
 CRPwordposition.pwc
+
+CRPall %>%
+  cohens_d(CRP~wordposition, paired=TRUE)
 
 #Interaction direction x word position
 
 DirectionxWordPosition.pwc<-CRPall %>%
   group_by(wordposition)%>%
-  pairwise_t_test(CRP~direction, paired=TRUE, p.adjust.method='none') #%>%
+  pairwise_t_test(CRP~direction, paired=TRUE, p.adjust.method='fdr') #%>%
   #select(-df,-statistic) #remove details 
 DirectionxWordPosition.pwc
+
+CRPall %>%
+  group_by(wordposition) %>%
+  cohens_d(CRP~direction, paired=TRUE)
 ```
 
 ### CRP in trials in which the oddballs were remembered v. forgotten 
@@ -734,23 +815,33 @@ Post-hoc uncorrected t-tests showed:
 ```{r echo=FALSE}
 #Main effect of word position
 RvFwordposition.pwc<-RvF %>%
-  pairwise_t_test(CRP~wordposition, paired=TRUE, p.adjust.method='none') #%>%
+  pairwise_t_test(CRP~wordposition, paired=TRUE, p.adjust.method='fdr') #%>%
 #select(-df,-statistic) #remove details 
 RvFwordposition.pwc
 
+RvF %>%
+  cohens_d(CRP~wordposition, paired=TRUE)
+
 #Main effect of recall 
 RvFrecall.pwc<-RvF %>%
-  pairwise_t_test(CRP~recall, paired=TRUE, p.adjust.method='none') #%>%
+  pairwise_t_test(CRP~recall, paired=TRUE, p.adjust.method='fdr') #%>%
   #select(-df,-statistic) #remove details 
 RvFrecall.pwc
+
+RvF %>%
+  cohens_d(CRP~recall, paired=TRUE)
 
 #Interaction direction x word position
 
 DirectionxWordPosition.RvF.pwc<-RvF %>%
   group_by(wordposition)%>%
-  pairwise_t_test(CRP~direction, paired=TRUE, p.adjust.method='none')#%>%
+  pairwise_t_test(CRP~direction, paired=TRUE, p.adjust.method='fdr')#%>%
   #select(-df,-statistic) #remove details 
 DirectionxWordPosition.RvF.pwc
+
+RvF %>%
+  group_by(wordposition)%>%
+  cohens_d(CRP~direction, paired=TRUE)
 ```
 
 ## Transitions ***to*** and ***from*** the oddballs
@@ -787,7 +878,8 @@ pltTF<-ggplot(TFplot,aes(x=wpplot,y=mean), group=oddballtype)+
   xlab('Lag') +
   ylab('Conditional Response Probability')+
   scale_color_manual(values=c('violetred2','turquoise2'), 
-                     labels=c('Emotional','Perceptual'), name='Oddball Type')
+                     labels=c('Emotional','Perceptual'), name='Oddball Type')+
+  theme_light()
 
 pltTF
 ```
@@ -822,24 +914,35 @@ Post-hoc uncorrected t-tests showed:
 ```{r echo=FALSE}
 # Main effect of word position
 TFWordPosition.pwc<-TFCRP %>%
-  pairwise_t_test(CRP~wordposition, paired=TRUE, p.adjust.method='none') #%>%
+  pairwise_t_test(CRP~wordposition, paired=TRUE, p.adjust.method='fdr') #%>%
   #select(-df,-statistic) #remove details 
 TFWordPosition.pwc
+
+TFCRP %>%
+  cohens_d(CRP~wordposition, paired=TRUE)
 
 #Interaction oddballtype x transition
 
 OddTypexTransition.TF.pwc<-TFCRP %>%
   group_by(transition)%>%
-  pairwise_t_test(CRP~oddballtype, paired=TRUE, p.adjust.method='none') #%>%
+  pairwise_t_test(CRP~oddballtype, paired=TRUE, p.adjust.method='fdr') #%>%
   #select(-df,-statistic) #remove details 
 OddTypexTransition.TF.pwc
 
+TFCRP %>%
+  group_by(transition) %>%
+  cohens_d(CRP~oddballtype, paired=TRUE)
+
 OddTypexTransition.TF.pwc2<-TFCRP %>%
   group_by(oddballtype)%>%
-  pairwise_t_test(CRP~transition, paired=TRUE, p.adjust.method='none') #%>%
+  pairwise_t_test(CRP~transition, paired=TRUE, p.adjust.method='fdr') #%>%
   #select(-df,-statistic) #remove details 
 
 OddTypexTransition.TF.pwc2
+
+TFCRP %>%
+  group_by(oddballtype) %>%
+  cohens_d(CRP~transition, paired=TRUE)
 ```
 
 ## Correlation between lag +1 after and E-1 Normalized recall ###
