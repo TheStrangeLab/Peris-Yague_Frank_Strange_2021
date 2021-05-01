@@ -232,8 +232,22 @@ recall.fig<-ggplot(recallplot, aes(fill=oddballtype, x=wordposition, y=normrec))
   labs(x='Word Position', y='Normalized Recall (- control)')+
   theme_light()
 
+#test<-ggplot(recall,aes(x=wordposition, y=normrec, color=oddballtype))+
+ #geom_boxplot(mapping=aes(x=wordposition,y=normrec),stat='summary',size=1)+geom_point(aes(group=interaction(subject,oddballtype)),position = position_dodge(width = .35),alpha=0.1)+
+  #scale_fill_manual(values=c('thistle1','lightblue1'), labels=c('Emotional','Perceptual'), name='Oddball Type')+
+#  scale_x_discrete(
+ #   labels = c("Odd-2", "Odd-1", "Odd","Odd+1")
+  #)+
+  #ggtitle('Normalized Recall')+
+  #labs(x='Word Position', y='Normalized Recall (- control)')+
+  #theme_classic()
 
-#recall.fig
+ggplot(recall, aes(x=factor(wordposition, labels=c('Odd-2', 'Odd-1', 'Odd', 'Odd+1')), y=normrec, fill=oddballtype))+
+  geom_boxplot(outlier.size=0)+
+  geom_point(position=position_jitterdodge(jitter.width=0.1))+
+  labs(x='Word Position')
+
+recall.fig
 
 ``` 
 
@@ -947,7 +961,7 @@ TFCRP %>%
 
 ## Correlation between lag +1 after and E-1 Normalized recall ###
 
-# Get the E-1 recall values 
+## Get the E-1 recall values 
 ```{r echo=FALSE, warning=FALSE, message=FALSE}
 em1_corr<-as.data.frame(subset(recall, oddballtype=='E' & wordposition=='m1'))
 lag_corr<-as.data.frame(subset(TFCRP, oddballtype=='E' & transition=='from' & direction=='Forwards' & wordposition=='1'))
@@ -967,5 +981,88 @@ cor.test(corrplot$V1, corrplot$V2,  method = "spearman", use = "complete.obs")
 
 
 ```
+## Effects of Valence and Arousal 
+#### Valence and Arousal on memory (Spanish)
+Look at whether there is an effect of valence and arousal on memory for emotional items in the present sample. 
+```{r echo=FALSE}
+setwd("/Users/albaperis/Desktop/Alba/PhD UPM /Von Restroff WP3/Paper_github/Odd_SOA_CRP/Raw_Results")
+arval<-read.csv('arvalrec_R.csv')
+arval<-as.data.frame(arval)
+
+#remove E-1 
+arval2<-as.data.frame(subset(arval, wordposition=='E'))
+
+arval.glm<-glm(recall~valencemean+arousalmean, family=binomial, data=arval2) #binomial fits a log reg
+Anova(arval.glm)
+plot(allEffects(arval.glm)) #plot all the effecta
+#plot(effect('valencemean',arval.glm)) #plot 1 effect
 
 
+arval.glmer<-glmer(recall~valencemean+arousalmean +(1|subject)+(1|word), family=binomial, data=arval2) #binomial fits a log reg
+Anova(arval.glmer)
+plot(effect('valencemean',arval.glmer))
+
+
+#arval.glm.stats<-summary(arval.glm)$coef
+#arval.glm.stats
+
+#ggplot(arval2, aes(x=valencemean, y=arousalmean, color=recall))+
+#  geom_line(lwd=2)
+
+```
+#### Predict E-1 recall as a function of valence and arousal on E recall
+```{r echo=FALSE}
+setwd("/Users/albaperis/Desktop/Alba/PhD UPM /Von Restroff WP3/Paper_github/Odd_SOA_CRP/Raw_Results")
+Em1arval<-read.csv('Em1arvalrec_R.csv')
+Em1arval<-as.data.frame(Em1arval)
+
+e_1 <- glm(Em1 ~ valencemean* arousalmean, data= Em1arval, family=binomial)
+summary(e_1)
+
+e_recalled <- subset(Em1arval, E==1)
+e_1_erecalled <- glm(Em1 ~ valencemean * arousalmean,data= e_recalled, family=binomial)
+summary(e_1_erecalled)
+
+#Darya's code:
+#e_1_erecalled <- glm(recall_e_1 <- valencemean + arousal,data= e_recalled, family=binomia)
+
+````
+
+#### Valence and Arousal English v. Spanish
+Compare whether there are differences in valence and arousal between the spanish and english version of the items (note that values were obtained from different papers with a different amount of raters each)
+```{r echo=FALSE}
+setwd("/Users/albaperis/Desktop/Alba/PhD UPM /Von Restroff WP3/Paper_github/Odd_SOA_CRP/Valence")
+arvalEvS<-read.csv('valence_EvS.csv')
+arvalEvS<-as.data.frame(arvalEvS)
+
+#Get normality values
+arvalnormality<-arvalEvS %>%
+  group_by(language) %>%
+  shapiro_test(valencemean)
+  #View()
+
+#Group the variables 
+valence.grouped<-group_by(arvalEvS, language) %>%
+  summarise(
+    count=n(),
+    mean=mean(valencemean),
+    sd=mean(valencesd)
+  )
+valence.plt<-ggboxplot(arvalEvS, x='language', y='valencemean',
+                       color='language')
+valence.plt
+
+arousal.grouped<-group_by(arvalEvS, language) %>%
+  summarise(
+    count=n(),
+    mean=mean(arousalmean),
+    sd=mean(arousalsd)
+  )
+arousal.plt<-ggboxplot(arvalEvS, x='language', y='arousalmean',
+                       color='language')
+arousal.plt
+
+#Run t tests
+valence.ttest<-t.test(valencemean~language, data=arvalEvS, paired=FALSE)
+arousal.ttest<-t.test(arousalmean~language, data=arvalEvS, paired=FALSE)
+```
