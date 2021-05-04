@@ -17,6 +17,8 @@ install.packages("ggplot2")
 install.packages('tidyverse')
 install.packages('rsample')
 install.packages('data.table')
+install.packages('effects')
+install.packages('lme4')
 
 library(tidyverse)
 library(ggpubr)
@@ -25,6 +27,8 @@ library(rsample)
 library(dplyr)
 library(ggplot2)
 library(data.table)
+library(effects)
+library(lme4)
 ```
 
 This notebook summarizes the stats and figures.
@@ -1010,23 +1014,25 @@ plot(effect('valencemean',arval.glmer))
 #  geom_line(lwd=2)
 
 ```
+
 #### Predict E-1 recall as a function of valence and arousal on E recall
+
 ```{r echo=FALSE}
 setwd("/Users/albaperis/Desktop/Alba/PhD UPM /Von Restroff WP3/Paper_github/Odd_SOA_CRP/Raw_Results")
 Em1arval<-read.csv('Em1arvalrec_R.csv')
 Em1arval<-as.data.frame(Em1arval)
 
-e_1 <- glm(Em1 ~ valencemean* arousalmean, data= Em1arval, family=binomial)
+e_1 <- glm(Em1 ~ valencemean + arousalmean, data= Em1arval, family=binomial)
 summary(e_1)
 
 e_recalled <- subset(Em1arval, E==1)
-e_1_erecalled <- glm(Em1 ~ valencemean * arousalmean,data= e_recalled, family=binomial)
+e_1_erecalled <- glm(Em1 ~ valencemean + arousalmean,data= e_recalled, family=binomial)
 summary(e_1_erecalled)
 
 #Darya's code:
 #e_1_erecalled <- glm(recall_e_1 <- valencemean + arousal,data= e_recalled, family=binomia)
 
-````
+```
 
 #### Valence and Arousal English v. Spanish
 Compare whether there are differences in valence and arousal between the spanish and english version of the items (note that values were obtained from different papers with a different amount of raters each)
@@ -1050,7 +1056,7 @@ valence.grouped<-group_by(arvalEvS, language) %>%
   )
 valence.plt<-ggboxplot(arvalEvS, x='language', y='valencemean',
                        color='language')
-valence.plt
+#valence.plt
 
 arousal.grouped<-group_by(arvalEvS, language) %>%
   summarise(
@@ -1060,7 +1066,7 @@ arousal.grouped<-group_by(arvalEvS, language) %>%
   )
 arousal.plt<-ggboxplot(arvalEvS, x='language', y='arousalmean',
                        color='language')
-arousal.plt
+#arousal.plt
 
 #Run t tests
 valence.ttest<-t.test(valencemean~language, data=arvalEvS, paired=FALSE)
