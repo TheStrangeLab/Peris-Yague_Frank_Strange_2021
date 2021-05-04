@@ -1000,6 +1000,9 @@ arval2<-as.data.frame(subset(arval, wordposition=='E'))
 arval.glm<-glm(recall~valencemean+arousalmean, family=binomial, data=arval2) #binomial fits a log reg
 Anova(arval.glm)
 plot(allEffects(arval.glm)) #plot all the effecta
+
+#try with summary
+summary(arval.glm)
 #plot(effect('valencemean',arval.glm)) #plot 1 effect
 
 
@@ -1042,38 +1045,38 @@ plot(allEffects(e_1))
 #### Valence and Arousal English v. Spanish
 Compare whether there are differences in valence and arousal between the spanish and english version of the items (note that values were obtained from different papers with a different amount of raters each)
 ```{r echo=FALSE}
-setwd("/Users/albaperis/Desktop/Alba/PhD UPM /Von Restroff WP3/Paper_github/Odd_SOA_CRP/Valence")
-arvalEvS<-read.csv('valence_EvS.csv')
-arvalEvS<-as.data.frame(arvalEvS)
+#setwd("/Users/albaperis/Desktop/Alba/PhD UPM /Von Restroff WP3/Paper_github/Odd_SOA_CRP/Valence")
+#arvalEvS<-as.data.frame(arvalEvS)
+#arvalEvS<-read.csv('valence_EvS.csv')
 
 #Get normality values
-arvalnormality<-arvalEvS %>%
-  group_by(language) %>%
-  shapiro_test(valencemean)
+#arvalnormality<-arvalEvS %>%
+ # group_by(language) %>%
+  #shapiro_test(valencemean)
   #View()
 
 #Group the variables 
-valence.grouped<-group_by(arvalEvS, language) %>%
-  summarise(
-    count=n(),
-    mean=mean(valencemean),
-    sd=mean(valencesd)
-  )
-valence.plt<-ggboxplot(arvalEvS, x='language', y='valencemean',
-                       color='language')
+#valence.grouped<-group_by(arvalEvS, language) %>%
+ # summarise(
+  #  count=n(),
+   # mean=mean(valencemean),
+    #sd=mean(valencesd)
+  #)
+#valence.plt<-ggboxplot(arvalEvS, x='language', y='valencemean',
+ #                      color='language')
 #valence.plt
 
-arousal.grouped<-group_by(arvalEvS, language) %>%
-  summarise(
-    count=n(),
-    mean=mean(arousalmean),
-    sd=mean(arousalsd)
-  )
-arousal.plt<-ggboxplot(arvalEvS, x='language', y='arousalmean',
-                       color='language')
+#arousal.grouped<-group_by(arvalEvS, language) %>%
+ # summarise(
+  #  count=n(),
+   # mean=mean(arousalmean),
+    #sd=mean(arousalsd)
+  #)
+#arousal.plt<-ggboxplot(arvalEvS, x='language', y='arousalmean',
+ #                      color='language')
 #arousal.plt
 
 #Run t tests
-valence.ttest<-t.test(valencemean~language, data=arvalEvS, paired=FALSE)
-arousal.ttest<-t.test(arousalmean~language, data=arvalEvS, paired=FALSE)
+#arousal.ttest<-t.test(arousalmean~language, data=arvalEvS, paired=FALSE)
+#valence.ttest<-t.test(valencemean~language, data=arvalEvS, paired=FALSE)
 ```

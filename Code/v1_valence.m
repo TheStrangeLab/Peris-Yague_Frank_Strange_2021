@@ -173,7 +173,7 @@ for sub=subjects
      
     cd '/Users/albaperis/Desktop/Alba/PhD UPM /Von Restroff WP3/Paper_github/Odd_SOA_CRP/Valence'
     
-    %Get the valence values according to the paper Stadthagen-Gonzalez et
+    %Get the valence values according to the paper Stadthagen-Gonzalez, Imbault et
     %al 2017
     [values items]=xlsread('valence.xlsx');
     values=num2cell(values);
