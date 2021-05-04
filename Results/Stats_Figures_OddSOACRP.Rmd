@@ -992,6 +992,7 @@ Look at whether there is an effect of valence and arousal on memory for emotiona
 setwd("/Users/albaperis/Desktop/Alba/PhD UPM /Von Restroff WP3/Paper_github/Odd_SOA_CRP/Raw_Results")
 arval<-read.csv('arvalrec_R.csv')
 arval<-as.data.frame(arval)
+arval$recall <- as.factor(arval$recall)
 
 #remove E-1 
 arval2<-as.data.frame(subset(arval, wordposition=='E'))
@@ -1021,6 +1022,9 @@ plot(allEffects(arval.glm)) #plot all the effecta
 setwd("/Users/albaperis/Desktop/Alba/PhD UPM /Von Restroff WP3/Paper_github/Odd_SOA_CRP/Raw_Results")
 Em1arval<-read.csv('Em1arvalrec_R.csv')
 Em1arval<-as.data.frame(Em1arval)
+
+Em1arval$E <- as.factor(Em1arval$E)
+Em1arval$Em1 <- as.factor(Em1arval$Em1)
 
 e_1 <- glm(Em1 ~ valencemean*E + arousalmean*E, data= Em1arval, family=binomial)
 summary(e_1)
