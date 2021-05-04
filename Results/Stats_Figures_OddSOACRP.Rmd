@@ -1017,7 +1017,7 @@ plot(effect('valencemean',arval.glmer))
 
 #### Predict E-1 recall as a function of valence and arousal on E recall
 
-```{r echo=FALSE}
+```{r}
 setwd("/Users/albaperis/Desktop/Alba/PhD UPM /Von Restroff WP3/Paper_github/Odd_SOA_CRP/Raw_Results")
 Em1arval<-read.csv('Em1arvalrec_R.csv')
 Em1arval<-as.data.frame(Em1arval)
