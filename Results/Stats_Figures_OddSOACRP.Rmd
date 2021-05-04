@@ -1002,9 +1002,9 @@ plot(allEffects(arval.glm)) #plot all the effecta
 #plot(effect('valencemean',arval.glm)) #plot 1 effect
 
 
-arval.glmer<-glmer(recall~valencemean+arousalmean +(1|subject)+(1|word), family=binomial, data=arval2) #binomial fits a log reg
-Anova(arval.glmer)
-plot(effect('valencemean',arval.glmer))
+#arval.glmer<-glmer(recall~valencemean+arousalmean +(1|subject)+(1|word), family=binomial, data=arval2) #binomial fits a log reg
+#Anova(arval.glmer)
+#plot(effect('valencemean',arval.glmer))
 
 
 #arval.glm.stats<-summary(arval.glm)$coef
@@ -1022,12 +1022,12 @@ setwd("/Users/albaperis/Desktop/Alba/PhD UPM /Von Restroff WP3/Paper_github/Odd_
 Em1arval<-read.csv('Em1arvalrec_R.csv')
 Em1arval<-as.data.frame(Em1arval)
 
-e_1 <- glm(Em1 ~ valencemean + arousalmean, data= Em1arval, family=binomial)
+e_1 <- glm(Em1 ~ valencemean*E + arousalmean*E, data= Em1arval, family=binomial)
 summary(e_1)
 
-e_recalled <- subset(Em1arval, E==1)
-e_1_erecalled <- glm(Em1 ~ valencemean + arousalmean,data= e_recalled, family=binomial)
-summary(e_1_erecalled)
+#e_recalled <- subset(Em1arval, E==1)
+#e_1_erecalled <- glm(Em1 ~ valencemean + arousalmean,data= e_recalled, family=binomial)
+#summary(e_1_erecalled)
 
 #Darya's code:
 #e_1_erecalled <- glm(recall_e_1 <- valencemean + arousal,data= e_recalled, family=binomia)
