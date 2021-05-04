@@ -988,7 +988,7 @@ cor.test(corrplot$V1, corrplot$V2,  method = "spearman", use = "complete.obs")
 ## Effects of Valence and Arousal 
 #### Valence and Arousal on memory (Spanish)
 Look at whether there is an effect of valence and arousal on memory for emotional items in the present sample. 
-```{r echo=FALSE}
+```{r}
 setwd("/Users/albaperis/Desktop/Alba/PhD UPM /Von Restroff WP3/Paper_github/Odd_SOA_CRP/Raw_Results")
 arval<-read.csv('arvalrec_R.csv')
 arval<-as.data.frame(arval)
