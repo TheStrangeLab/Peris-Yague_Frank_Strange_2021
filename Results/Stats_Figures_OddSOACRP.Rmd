@@ -1024,6 +1024,7 @@ Em1arval<-as.data.frame(Em1arval)
 
 e_1 <- glm(Em1 ~ valencemean*E + arousalmean*E, data= Em1arval, family=binomial)
 summary(e_1)
+plot(allEffects(e_1))
 
 #e_recalled <- subset(Em1arval, E==1)
 #e_1_erecalled <- glm(Em1 ~ valencemean + arousalmean,data= e_recalled, family=binomial)
