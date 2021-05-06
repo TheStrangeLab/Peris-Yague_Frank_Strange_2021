@@ -62,7 +62,7 @@ pltpfr<-ggplot(pfrplot,aes(x=sp,y=mean), group=recall, color=recall)+
     ggtitle('Probability of First Recall')+
     scale_color_manual(values=c('darkkhaki','cadetblue3'), 
                      labels=c('Odd Forgotten','Odd Remembered'), name='Oddball Recall')+
-  theme_light()
+  theme_classic()
   
 
 pltpfr
@@ -156,7 +156,7 @@ RR<-as.data.frame(RR)
 
 RRplot<-RR %>%
   group_by(oddballtype) %>%
-  get_summary_stats(relativerecall,type='mean_se') #%>%
+  get_summary_stats(relativerecall,type='mean_ci') #%>%
   #View()
 RRplot <- rename(RRplot, c('relativerecall' = mean))
 
@@ -168,12 +168,12 @@ RRnormality<-RR %>%
 RR.plt<-ggplot(RR,aes(x=oddballtype, y=relativerecall, fill=oddballtype))+
   geom_violin()+#(position='dodge', stat='identity')+
   geom_jitter(color='grey', size=0.4, alpha=0.9)+ 
-  geom_errorbar(data=RRplot, aes(x=oddballtype, ymin=relativerecall-se, ymax=relativerecall+se), width=0.4, color='wheat4',
+  geom_errorbar(data=RRplot, aes(x=oddballtype, ymin=relativerecall-ci, ymax=relativerecall+ci), width=0.4, color='wheat4',
                 size=0.5, position=position_dodge(0.9), stat='identity')+
   scale_fill_manual(values=c('thistle1','lightblue1'), labels=c('Emotional','Perceptual'), name='Oddball Type')+
   ggtitle('Relative Recall Position')+
   labs(x='Oddball Type', y='Relative Recall Position')+
-  theme_light()
+  theme_classic()
   
 RR.plt
 
@@ -220,36 +220,24 @@ recall<-as.data.frame(recall)
 
 recallplot<-recall %>%
   group_by(oddballtype,wordposition) %>%
-  get_summary_stats(normrec,type='mean_se')#%>%
+  get_summary_stats(normrec,type='mean_ci')#%>%
   #View()
 recallplot <- rename(recallplot, c('normrec' = mean))
 
 recall.fig<-ggplot(recallplot, aes(fill=oddballtype, x=wordposition, y=normrec))+
   geom_bar(position='dodge', stat='identity')+
-  geom_errorbar(aes(x=wordposition, ymin=normrec-se, ymax=normrec+se), width=0.4, color='wheat4',
-                size=0.5, position=position_dodge(0.9), stat='identity')+
+  geom_errorbar(aes(x=wordposition, ymin=normrec-ci, ymax=normrec+ci), width=0.4, color='wheat4',
+                size=0.5, position=position_dodge(0.9), stat='identity')+ 
+  geom_jitter(data=recall,aes(color=oddballtype, x=wordposition, y=normrec), position=position_jitterdodge(dodge.width=0.9), show.legend=FALSE, alpha=0.2)+
+  guides(col = FALSE)+
+  scale_color_manual(values=c('orchid', 'deepskyblue'))+
   scale_fill_manual(values=c('thistle1','lightblue1'), labels=c('Emotional','Perceptual'), name='Oddball Type')+
   scale_x_discrete(
     labels = c("Odd-2", "Odd-1", "Odd","Odd+1")
   )+
   ggtitle('Normalized Recall')+
   labs(x='Word Position', y='Normalized Recall (- control)')+
-  theme_light()
-
-#test<-ggplot(recall,aes(x=wordposition, y=normrec, color=oddballtype))+
- #geom_boxplot(mapping=aes(x=wordposition,y=normrec),stat='summary',size=1)+geom_point(aes(group=interaction(subject,oddballtype)),position = position_dodge(width = .35),alpha=0.1)+
-  #scale_fill_manual(values=c('thistle1','lightblue1'), labels=c('Emotional','Perceptual'), name='Oddball Type')+
-#  scale_x_discrete(
- #   labels = c("Odd-2", "Odd-1", "Odd","Odd+1")
-  #)+
-  #ggtitle('Normalized Recall')+
-  #labs(x='Word Position', y='Normalized Recall (- control)')+
-  #theme_classic()
-
-ggplot(recall, aes(x=factor(wordposition, labels=c('Odd-2', 'Odd-1', 'Odd', 'Odd+1')), y=normrec, fill=oddballtype))+
-  geom_boxplot(outlier.size=0)+
-  geom_point(position=position_jitterdodge(jitter.width=0.1))+
-  labs(x='Word Position')
+  theme_classic()
 
 recall.fig
 
@@ -392,15 +380,18 @@ recallSOA<-as.data.frame(recallSOA)
 
 recSOAplot<-recallSOA %>%
   group_by(oddballtype,wordposition, SOA) %>%
-  get_summary_stats(normrec,type='mean_se')#%>%
+  get_summary_stats(normrec,type='mean_ci')#%>%
   #View()
 
 recSOAplot<-rename(recSOAplot, c('normrec'=mean))
   
 recall.SOA.fig<-ggplot(recSOAplot, aes(fill=oddballtype, x=wordposition, y=normrec))+
   geom_bar(position='dodge', stat='identity')+
-  geom_errorbar(aes(x=wordposition, ymin=normrec-se, ymax=normrec+se), width=0.4, color='wheat4',
+  geom_errorbar(aes(x=wordposition, ymin=normrec-ci, ymax=normrec+ci), width=0.4, color='wheat4',
                 size=0.5, position=position_dodge(0.9), stat='identity')+
+  geom_jitter(data=recallSOA,aes(color=oddballtype, x=wordposition, y=normrec), position=position_jitterdodge(dodge.width=0.9), show.legend=FALSE, alpha=0.07)+
+  guides(col = FALSE)+
+  scale_color_manual(values=c('orchid', 'deepskyblue'))+
   scale_fill_manual(values=c('thistle1','lightblue1'), labels=c('Emotional','Perceptual'), name='Oddball Type')+
   scale_x_discrete(
     labels = c("Odd-2", "Odd-1", "Odd","Odd+1")
@@ -408,7 +399,7 @@ recall.SOA.fig<-ggplot(recSOAplot, aes(fill=oddballtype, x=wordposition, y=normr
   ggtitle('Normalized Recall by SOA')+
   labs(x='Word Position', y='Normalized Recall (- control)')+
   facet_wrap(~ SOA, ncol=3)+
-  theme_light()
+  theme_classic()
 recall.SOA.fig
 ```
 
@@ -501,16 +492,17 @@ listrecallSOA<-as.data.frame(listrecallSOA)
 
 listrecallSOAplot<-listrecallSOA %>%
   group_by(SOA) %>%
-  get_summary_stats(total_recall_list,type='mean_se')
+  get_summary_stats(total_recall_list,type='mean_ci')
 
 list.recall.SOA.fig<-ggplot(data = listrecallSOAplot,mapping = aes(x = as.factor(SOA), y = mean))+
      geom_bar(position='dodge',stat = "identity") +
   geom_bar(position='dodge', stat='identity', fill='mistyrose2')+
-  geom_errorbar(aes(x=as.factor(SOA), ymin=mean-se, ymax=mean+se), width=0.4, color='coral1',
+  geom_errorbar(aes(x=as.factor(SOA), ymin=mean-ci, ymax=mean+ci), width=0.4, color='coral1',
                 size=0.8, position=position_dodge(0.8), stat='identity')+
     ggtitle('Number of items recalled by SOA')+
     labs(x='Stimulus Onset Asynchronies (SOA)', y='Items recalled ')+     
-    theme_light()
+    scale_y_continuous(n.breaks=14)+
+    theme_classic()
 
 list.recall.SOA.fig
 ```
@@ -702,7 +694,7 @@ pltCRP<-ggplot(crpplot,aes(x=wpplot,y=mean), group=oddballtype)+
         ylab('Conditional Response Probability')+
         scale_color_manual(values=c('violetred2','turquoise2'), 
           labels=c('Emotional','Perceptual'), name='Oddball Type')+
-        theme_light()
+        theme_classic()
                     
 pltCRP
 
@@ -797,7 +789,8 @@ pltRVF<-ggplot(rvfplot,aes(x=wpplot,y=mean), group=oddballtype)+
   xlab('Lag') +
   ylab('Conditional Response Probability')+
   scale_color_manual(values=c('violetred2','turquoise2'), 
-                     labels=c('Emotional','Perceptual'), name='Oddball Type')
+                     labels=c('Emotional','Perceptual'), name='Oddball Type')+
+  theme_classic()
 pltRVF
 
 ```
@@ -897,7 +890,7 @@ pltTF<-ggplot(TFplot,aes(x=wpplot,y=mean), group=oddballtype)+
   ylab('Conditional Response Probability')+
   scale_color_manual(values=c('violetred2','turquoise2'), 
                      labels=c('Emotional','Perceptual'), name='Oddball Type')+
-  theme_light()
+  theme_classic()
 
 pltTF
 ```
@@ -977,7 +970,8 @@ corrplt<-ggplot(corrplot, aes(x=V1, y=V2))+
   geom_smooth(method=lm, se=FALSE, color='lightskyblue2')+
   ggtitle('Correlation of E-1 normalized recall and transitions from E Odd (lag +1)')+
   ylab('Lag +1 transitions from E Odd')+
-  xlab('E-1 Normalized Recall')
+  xlab('E-1 Normalized Recall')+
+  theme_classic()
 
 corrplt
 
@@ -999,10 +993,10 @@ arval2<-as.data.frame(subset(arval, wordposition=='E'))
 
 arval.glm<-glm(recall~valencemean+arousalmean, family=binomial, data=arval2) #binomial fits a log reg
 Anova(arval.glm)
-plot(allEffects(arval.glm)) #plot all the effecta
+plot(allEffects(arval.glm)) #plot all the effects
 
 #try with summary
-summary(arval.glm)
+#summary(arval.glm)
 #plot(effect('valencemean',arval.glm)) #plot 1 effect
 
 
@@ -1028,10 +1022,22 @@ Em1arval<-as.data.frame(Em1arval)
 
 Em1arval$E <- as.factor(Em1arval$E)
 Em1arval$Em1 <- as.factor(Em1arval$Em1)
+e_noe <- glm(Em1 ~ valencemean+arousalmean, data = Em1arval, family= binomial)
+e_0 <- glm(Em1 ~ valencemean + E + arousalmean, data = Em1arval, family = binomial) #only me
+e_1 <- glm(Em1 ~ valencemean*E + arousalmean*E, data= Em1arval, family=binomial) #interactions
+anova(e_noe,e_0,e_1) #is the model with the me different from the one with interactions? No. (Deviance>0.05) and the AIC is lower for e_0 (see if summary())
 
-e_1 <- glm(Em1 ~ valencemean*E + arousalmean*E, data= Em1arval, family=binomial)
-summary(e_1)
-plot(allEffects(e_1))
+Anova(e_0, type = 3)
+
+plot(allEffects(e_0))
+
+#Anova(e_1,type=3)
+#summary(e_1)
+#plot(allEffects(e_0))
+
+#test<-glm(Em1~E+arousalmean+valencemean, data=Em1arval, family=binomial)
+#Anova(test)
+#summary(test)
 
 #e_recalled <- subset(Em1arval, E==1)
 #e_1_erecalled <- glm(Em1 ~ valencemean + arousalmean,data= e_recalled, family=binomial)
@@ -1039,6 +1045,13 @@ plot(allEffects(e_1))
 
 #Darya's code:
 #e_1_erecalled <- glm(recall_e_1 <- valencemean + arousal,data= e_recalled, family=binomia)
+
+#setwd("/Users/albaperis/Desktop/Alba/PhD UPM /Von Restroff WP3/Paper_github/Odd_SOA_CRP/Raw_Results")
+#darya <- read.csv('darya_R.csv')
+#darya$Erecall <- factor(darya$Erecall)
+#gmixed0<- glmer(Em1recall ~ valencemean+Erecall + (1|subject), data = darya, family=binomial)
+#gmixed1<- glmer(Em1recall ~ valencemean*Erecall + (1|subject), data = darya, family=binomial)
+#anova(gmixed0,gmixed1)
 
 ```
 

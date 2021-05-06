@@ -270,5 +270,11 @@ Em1_arvalrec_R=[Em1_arvalrec(:,11) Em1_arvalrec(:,3) Em1_arvalrec(:,5) Em1_arval
 header={'Em1' 'E' 'valencemean' 'arousalmean'};
 Em1_arvalrec_R=[header;Em1_arvalrec_R];
 
+darya=[Em1_arvalrec(:,[1:3,5,7,10,11])];
+
+header={'subject' 'Eword' 'Erecall' 'valencemean' 'arousalmean' 'Em1word' 'Em1recall'};
+darya=[header;darya];
+
 cd     '/Users/albaperis/Desktop/Alba/PhD UPM /Von Restroff WP3/Paper_github/Odd_SOA_CRP/Raw_Results';
 writecell (Em1_arvalrec_R, 'Em1arvalrec_R.csv');
+writecell(darya, 'darya_R.csv');
