@@ -10,15 +10,15 @@ output:
 chooseCRANmirror(graphics=FALSE, ind=1)
 knitr::opts_chunk$set(echo = TRUE)
 
-install.packages('dplyr')
-install.packages('ggpubr')
-install.packages('rstatix')
-install.packages("ggplot2")
-install.packages('tidyverse')
-install.packages('rsample')
-install.packages('data.table')
-install.packages('effects')
-install.packages('lme4')
+#install.packages('dplyr')
+#install.packages('rstatix')
+##install.packages('ggpubr')
+#install.packages("ggplot2")
+#install.packages('tidyverse')
+#install.packages('data.table')
+#install.packages('rsample')
+#install.packages('lme4')
+#install.packages('effects')
 
 library(tidyverse)
 library(ggpubr)
@@ -74,6 +74,13 @@ pltpfr
 Shapiro-Wilk shows the data is not normally distributed so we also plotted QQ plots
 
 ```{r echo=FALSE}
+#factor the columns
+PFR$subject<-factor(PFR$subject)
+PFR$oddballtype<-factor(PFR$oddballtype)
+PFR$recall<-factor(PFR$recall)
+PFR$sp<-factor(PFR$sp)
+
+
 PFR.outliers<-PFR %>%
   group_by(oddballtype,recall,sp) %>%
   identify_outliers(pfr) #%>% #test for outliers
@@ -153,6 +160,9 @@ setwd("/Users/albaperis/Desktop/Alba/PhD UPM /Von Restroff WP3/Paper_github/Odd_
 RR<-read.csv('RR.csv')
 RR<-as.data.frame(RR)
 #head(RR) #to show you what my raw data looks like 
+RR$oddballtype<-factor(RR$oddballtype)
+RR$SOA<-factor(RR$SOA)
+RR$subject<-factor(RR$subject)
 
 RRplot<-RR %>%
   group_by(oddballtype) %>%
@@ -182,6 +192,51 @@ RR %>%
   cohens_d(relativerecall~oddballtype, paired=FALSE)
 
 RRplot
+
+# Is there a difference in relative recall position between SOAs?
+# Plot 
+RR.plot.SOA.data<- RR %>%
+  group_by(SOA, oddballtype) %>%
+  get_summary_stats(relativerecall, type='mean_ci')
+
+RR.SOA.plt <- ggplot (RR.plot.SOA.data,aes(x=as.factor(SOA),y=mean, group=oddballtype, color=oddballtype))+
+  geom_line(size=1) +
+  geom_errorbar(data=RR.plot.SOA.data, aes(x=as.factor(SOA), ymin=mean-ci, ymax=mean+ci), width=0.2,
+                size=0.5, position=position_dodge(0.05))+ 
+  theme_classic()+
+  theme(strip.background = element_blank())+#,
+  #strip.text.x = element_blank()) +
+  #ggtitle('CRP by SOA')+
+  scale_color_manual(values=c('hotpink', 'deepskyblue1'))+
+
+  xlab('SOA') +
+  ylab('Relative Recall ')+
+  labs(color='Oddball Type')
+
+RR.SOA.plt
+
+#Now let's run a 2-way ANOVA with oddball x SOA as factors on relative recall 
+RR.SOA.outliers<-RR %>%
+  group_by(oddballtype,SOA) %>%
+  identify_outliers(relativerecall) #test for outliers
+
+#test for normality
+RR.SOA.normality<-RR %>%
+  group_by(oddballtype,SOA) %>%
+  shapiro_test(relativerecall)
+
+#Create QQ plot for each cell of design
+RR.SOA.QQ<-ggqqplot(RR,'relativerecall',ggtheme=theme_bw())+
+  facet_grid(oddballtype~SOA, labeller='label_both')
+RR.SOA.QQ
+
+hist(RR$relativerecall)
+lines(density(RR$relativerecall))
+#These re NOT normally distributed so run a non-parametric ANOVA. Can this be done with glmer?
+
+RR.SOA.glmer<-glmer(relativerecall ~ oddballtype*SOA + (1|subject), data = RR)
+Anova(RR.SOA.glmer,3)
+
 ```
 
 ## E and E-1 recall positions
@@ -210,7 +265,7 @@ dirplt<-ggplot(dir, aes(x=E, y=E.1))+
 dirplt
 ```
 
-## Normalized Recall 
+## Fig 5. Normalized Recall 
 
 ```{r echo=FALSE}
 setwd("/Users/albaperis/Desktop/Alba/PhD UPM /Von Restroff WP3/Paper_github/Odd_SOA_CRP/Raw_Results")
@@ -218,9 +273,13 @@ recall<-read.csv('normrec_R.csv')
 recall<-as.data.frame(recall)
 #head(recall) #to show you what my raw data looks like 
 
+recall$subject<-factor(recall$subject)
+recall$oddballtype<-factor(recall$oddballtype)
+recall$wordposition<-factor(recall$wordposition)
+
 recallplot<-recall %>%
   group_by(oddballtype,wordposition) %>%
-  get_summary_stats(normrec,type='mean_ci')#%>%
+  get_summary_stats(normrec,type='mean_ci')
   #View()
 recallplot <- rename(recallplot, c('normrec' = mean))
 
@@ -228,14 +287,14 @@ recall.fig<-ggplot(recallplot, aes(fill=oddballtype, x=wordposition, y=normrec))
   geom_bar(position='dodge', stat='identity')+
   geom_errorbar(aes(x=wordposition, ymin=normrec-ci, ymax=normrec+ci), width=0.4, color='wheat4',
                 size=0.5, position=position_dodge(0.9), stat='identity')+ 
-  geom_jitter(data=recall,aes(color=oddballtype, x=wordposition, y=normrec), position=position_jitterdodge(dodge.width=0.9), show.legend=FALSE, alpha=0.2)+
+  geom_jitter(data=recall,aes(color=oddballtype, x=wordposition, y=normrec),    position=position_jitterdodge(dodge.width=0.9), show.legend=FALSE, alpha=0.2)+
   guides(col = FALSE)+
   scale_color_manual(values=c('orchid', 'deepskyblue'))+
-  scale_fill_manual(values=c('thistle1','lightblue1'), labels=c('Emotional','Perceptual'), name='Oddball Type')+
+  scale_fill_manual(values=c('thistle1','lightblue1'), labels=c('Emotional','Perceptual'), name='Oddball List Type')+
   scale_x_discrete(
     labels = c("Odd-2", "Odd-1", "Odd","Odd+1")
   )+
-  ggtitle('Normalized Recall')+
+  #ggtitle('Normalized Recall')+
   labs(x='Word Position', y='Normalized Recall (- control)')+
   theme_classic()
 
@@ -263,6 +322,9 @@ recallnormality
 recall.QQ<-ggqqplot(recall,'normrec',ggtheme=theme_bw())+
   facet_grid(oddballtype~wordposition, labeller='label_both')
 recall.QQ
+
+levene.recall<-levene_test(normrec~oddballtype*wordposition, data=recall)
+levene.recall #meets homogeneity of variances 
 ```
 
 We then conducted a RM ANOVA which showed a significant main effect of word position and a significant interaction of oddball type x word position. 
@@ -306,9 +368,8 @@ WordPosition.pwc <- WordPosition.pwc %>% add_xy_position(x = "wordposition")
 WordPositionxOdd.pwc <- WordPositionxOdd.pwc %>% add_xy_position(x = "wordposition")
 
 recall.fig+
-  stat_pvalue_manual(WordPositionxOdd.pwc, label='p.adj.signif', inherit.aes=FALSE, hide.ns=TRUE, tip.length=0, bracket.nudge.y=-0.42)+
-  stat_pvalue_manual(WordPosition.pwc, label='p.adj.signif', inherit.aes=FALSE, hide.ns=TRUE, tip.length =0, bracket.nudge.y=-0.42)
-
+  stat_pvalue_manual(WordPositionxOdd.pwc, label='{p.adj.signif}', inherit.aes=FALSE, hide.ns=TRUE, tip.length=0, bracket.nudge.y=-0.7)+
+  stat_pvalue_manual(WordPosition.pwc, label='{p.adj.signif}', inherit.aes=FALSE, hide.ns=TRUE, tip.length =0, bracket.nudge.y=-0.42)
 ```
 
 ## Contingency Analyses of the oddballs and oddball-1 items
@@ -377,6 +438,10 @@ setwd("/Users/albaperis/Desktop/Alba/PhD UPM /Von Restroff WP3/Paper_github/Odd_
 recallSOA<-read.csv('normrec_SOA_R.csv')
 recallSOA<-as.data.frame(recallSOA)
 #head(recallSOA) #to show you what my raw data looks like 
+recallSOA$subject<-factor(recallSOA$subject)
+recallSOA$oddballtype<-factor(recallSOA$oddballtype)
+recallSOA$wordposition<-factor(recallSOA$wordposition)
+recallSOA$SOA<-factor(recallSOA$SOA)
 
 recSOAplot<-recallSOA %>%
   group_by(oddballtype,wordposition, SOA) %>%
@@ -428,6 +493,9 @@ recall.SOA.QQ<-ggqqplot(recallSOA,'normrec',ggtheme=theme_bw())+
   facet_grid(oddballtype+wordposition~SOA, labeller='label_both') # looks fine 
 
 recall.SOA.QQ
+
+levene.recall.SOA<-levene_test(normrec~oddballtype*wordposition*SOA, data=recallSOA)
+levene.recall.SOA #meets homogeneity of variances 
 ```
 
 We then conducted a RM ANOVA which showed a significant main effect of word position, SOA and a significant oddball type x word position interaction. 
@@ -482,29 +550,34 @@ recallSOA %>%
 
 ```
 
-### Total recalled items per list per SOA
+### Fig. 6 Total recalled items per list per SOA
 The goal of this is to check whether the total recalled items per list per SOA increases as SOA increases. 
 ```{r echo=FALSE}
 setwd("/Users/albaperis/Desktop/Alba/PhD UPM /Von Restroff WP3/Paper_github/Odd_SOA_CRP/Raw_Results")
 
 listrecallSOA<-read.csv('list_recall_SOA_R.csv')
 listrecallSOA<-as.data.frame(listrecallSOA)
+listrecallSOA$SOA<-factor(listrecallSOA$SOA)
 
 listrecallSOAplot<-listrecallSOA %>%
   group_by(SOA) %>%
   get_summary_stats(total_recall_list,type='mean_ci')
 
-list.recall.SOA.fig<-ggplot(data = listrecallSOAplot,mapping = aes(x = as.factor(SOA), y = mean))+
-     geom_bar(position='dodge',stat = "identity") +
-  geom_bar(position='dodge', stat='identity', fill='mistyrose2')+
-  geom_errorbar(aes(x=as.factor(SOA), ymin=mean-ci, ymax=mean+ci), width=0.4, color='coral1',
+list.recall.SOA.fig<-ggplot(data = listrecallSOAplot,mapping = aes(x = as.factor(SOA), y = mean, fill=SOA))+
+  geom_bar(position='dodge', stat='identity')+#, fill='mistyrose2')+
+  geom_errorbar(aes(x=as.factor(SOA), ymin=mean-ci, ymax=mean+ci), width=0.4, color='black',
                 size=0.8, position=position_dodge(0.8), stat='identity')+
-    ggtitle('Number of items recalled by SOA')+
+  #geom_jitter(data=listrecallSOA,mapping =aes(x=SOA, y=total_recall_list))+
+    #ggtitle('Number of items recalled by SOA')+
     labs(x='Stimulus Onset Asynchronies (SOA)', y='Items recalled ')+     
     scale_y_continuous(n.breaks=14)+
+    scale_fill_brewer(palette='Set2')+
     theme_classic()
 
 list.recall.SOA.fig
+
+list.recall.SOA.fig + geom_jitter(data=listrecallSOA,mapping =aes(x=SOA, y=total_recall_list), alpha=0.1)#+scale_color_brewer(palette="black")
+
 ```
 
 
@@ -660,7 +733,7 @@ PSOA6_chisq
 
 We next conducted conditional response probability analyses (CRP). 
 
-### CRP in all the data
+### Fig 2A. CRP in all the data
 
 ```{r echo=FALSE}
 setwd("/Users/albaperis/Desktop/Alba/PhD UPM /Von Restroff WP3/Paper_github/Odd_SOA_CRP/Raw_Results")
@@ -688,15 +761,21 @@ crpplot$wpplot<-wpplot
 pltCRP<-ggplot(crpplot,aes(x=wpplot,y=mean), group=oddballtype)+
         geom_line(aes(color=oddballtype)) +
         geom_point(aes(color=oddballtype)) +
+        theme_classic()+
         facet_wrap(~ direction, scales='free_x')+    
+        theme(strip.background = element_blank())+
         #ggtitle('CRP all')+
         xlab('Lag') +
         ylab('Conditional Response Probability')+
         scale_color_manual(values=c('violetred2','turquoise2'), 
-          labels=c('Emotional','Perceptual'), name='Oddball Type')+
-        theme_classic()
+          labels=c('Emotional','Perceptual'), name='Oddball List Type')
                     
 pltCRP
+
+CRPall$subject<-factor(CRPall$subject)
+CRPall$oddballtype<-factor(CRPall$oddballtype)
+CRPall$direction<-factor(CRPall$direction)
+CRPall$wordposition<-factor(CRPall$wordposition)
 
 ```
 #### Statistics
@@ -785,13 +864,19 @@ pltRVF<-ggplot(rvfplot,aes(x=wpplot,y=mean), group=oddballtype)+
   geom_line(aes(color=oddballtype)) +
   geom_point(aes(color=oddballtype)) +
   facet_wrap(~ recall + direction, scales='free_x')+   
-  ggtitle('CRP forgotten vs. recalled oddballs')+
+  #ggtitle('CRP forgotten vs. recalled oddballs')+
   xlab('Lag') +
   ylab('Conditional Response Probability')+
   scale_color_manual(values=c('violetred2','turquoise2'), 
-                     labels=c('Emotional','Perceptual'), name='Oddball Type')+
+                     labels=c('Emotional','Perceptual'), name='Oddball List Type')+
   theme_classic()
 pltRVF
+
+RvF$subject<-factor(RvF$subject)
+RvF$oddballtype<-factor(RvF$oddballtype)
+RvF$recall<-factor(RvF$recall)
+RvF$direction<-factor(RvF$direction)
+RvF$wordposition<-factor(RvF$wordposition)
 
 ```
 
@@ -855,7 +940,7 @@ RvF %>%
   cohens_d(CRP~direction, paired=TRUE)
 ```
 
-## Transitions ***to*** and ***from*** the oddballs
+## Fig 3C. Transitions ***to*** and ***from*** the oddballs
 
 We next evaluated whether CRP changed in transitions to and from the oddballs. 
 
@@ -881,18 +966,31 @@ invisible(as.data.frame(wpplot))
 TFplot$wpplot<-wpplot
 TFplot$transition<-factor(TFplot$transition, levels=c('to','from'))
 
+transition.labs<- c('Transition TO the oddball', 'Transition FROM the oddball')
+names(transition.labs)<-c('to', 'from')
+
+
 pltTF<-ggplot(TFplot,aes(x=wpplot,y=mean), group=oddballtype)+
   geom_line(aes(color=oddballtype)) +
   geom_point(aes(color=oddballtype)) +
-  facet_wrap(~ transition + direction, scales='free_x')+    
-  ggtitle('CRP transitions to and from the oddballs')+
+   theme_classic()+
+  facet_grid(transition~direction, scales='free_x', 
+             labeller=labeller(transition = as_labeller(transition.labs)))+   
+  theme(strip.background = element_blank())+
+  #ggtitle('CRP transitions to and from the oddballs')+
   xlab('Lag') +
   ylab('Conditional Response Probability')+
   scale_color_manual(values=c('violetred2','turquoise2'), 
-                     labels=c('Emotional','Perceptual'), name='Oddball Type')+
-  theme_classic()
+                     labels=c('Emotional','Perceptual'), name='Oddball List Type')
+ 
 
 pltTF
+
+TFCRP$subject<-factor(TFCRP$subject)
+TFCRP$oddballtype<-factor(TFCRP$oddballtype)
+TFCRP$transition<-factor(TFCRP$transition)
+TFCRP$direction<-factor(TFCRP$direction)
+TFCRP$wordposition<-factor(TFCRP$wordposition)
 ```
 
 #### Statistics
@@ -908,12 +1006,36 @@ TF.QQ
 A RM ANOVA showed a significant effect of word position and a significant oddball type x transition interaction. 
 
 ```{r echo=FALSE, warning=FALSE, message=FALSE}
+#E_subset<-TFCRP[which(TFCRP$oddballtype=='E'),]
+
+
+#E_subset.aov<-anova_test(
+#  data=E_subset, dv=CRP, wid=subject,
+#  within=c(wordposition,direction,transition)
+#)
+#get_anova_table(E_subset.aov)
+
 TF.aov<-anova_test(
-  data=TFCRP,dv=CRP,wid=subject,
-  within=c(oddballtype,wordposition,direction,transition)
+  data=TFCRP,dv=CRP,wid=subject, 
+  within=c(oddballtype,wordposition,direction,transition),
 )
 TF.aov
 get_anova_table(TF.aov)
+
+test <- lmer(CRP ~ oddballtype*wordposition*direction*transition + (1|subject), data = TFCRP, na.action='na.omit')
+Anova(test,3)
+test.pwc<-emmeans(test, ~ direction*transition)
+pairs(test.pwc)
+
+#calculate how many NaNs
+TFCRP %>%
+  group_by(subject) %>%
+  summarise_each(funs(sum(is.na(.))))
+ 
+#total observations
+TFCRP  %>%
+  group_by(subject) %>%
+  dplyr::summarise(n=n())
 ```
 
 Post-hoc uncorrected t-tests showed:
@@ -955,6 +1077,99 @@ TFCRP %>%
   group_by(oddballtype) %>%
   cohens_d(CRP~transition, paired=TRUE)
 ```
+
+FIG.3 USE THE ANALYSES BELOW. 
+
+````{r echo=FALSE}
+
+#Collapsing accross lags 'omitnan'
+setwd("/Users/albaperis/Desktop/Alba/PhD UPM /Von Restroff WP3/Paper_github/Odd_SOA_CRP/Raw_Results")
+TFCRP_collapsed<-read.csv('collapsed_CRP_omitnan.csv')
+TFCRP_collapsed<-as.data.frame(TFCRP_collapsed)
+
+
+TFCRP_collapsed$subject<-as.factor(TFCRP_collapsed$subject)
+TFCRP_collapsed$oddballtype<-as.factor(TFCRP_collapsed$oddballtype)
+TFCRP_collapsed$transition<-as.factor(TFCRP_collapsed$transition)
+TFCRP_collapsed$direction<-as.factor(TFCRP_collapsed$direction)
+
+
+TF.collapsed.aov<-anova_test(
+  data=TFCRP_collapsed,dv=CRPmean,wid=subject, 
+  within=c(oddballtype,direction,transition),
+)
+TF.collapsed.aov
+get_anova_table(TF.collapsed.aov)
+
+odd.collapsed.pwc<-TFCRP_collapsed %>%
+  pairwise_t_test(CRPmean~oddballtype, paired=TRUE, p.adjust.method='fdr') #%>%
+odd.collapsed.pwc
+
+TFCRP_collapsed %>%
+  cohens_d(CRPmean~oddballtype, paired=TRUE)
+
+ggboxplot(TFCRP_collapsed, x = "oddballtype", y = "CRPmean") 
+
+transition.collapsed.pwc<-TFCRP_collapsed %>%
+  pairwise_t_test(CRPmean~transition, paired=TRUE, p.adjust.method='fdr') #%>%
+transition.collapsed.pwc
+
+TFCRP_collapsed %>%
+  cohens_d(CRPmean~transition, paired=TRUE)
+
+ggboxplot(TFCRP_collapsed, x = "transition", y = "CRPmean") 
+
+OddxTr.collapsed.pwc<-TFCRP_collapsed %>%
+  group_by(oddballtype)%>%
+  pairwise_t_test(CRPmean~transition, paired=TRUE, p.adjust.method='fdr') #%>%
+OddxTr.collapsed.pwc
+
+TFCRP_collapsed %>%
+  group_by(oddballtype) %>%
+  cohens_d(CRPmean~transition, paired=TRUE)
+
+ggboxplot(TFCRP_collapsed, x = "transition", y = "CRPmean", color='oddballtype') 
+
+
+DirxTr.collapsed.pwc<-TFCRP_collapsed %>%
+  group_by(direction)%>%
+  pairwise_t_test(CRPmean~transition, paired=TRUE, p.adjust.method='fdr') #%>%
+DirxTr.collapsed.pwc
+
+TFCRP_collapsed %>%
+  group_by(direction) %>%
+  cohens_d(CRPmean~transition, paired=TRUE)
+
+ggboxplot(TFCRP_collapsed, x = "transition", y = "CRPmean", color='direction') 
+
+transition.labs<- c('Transition TO the oddball', 'Transition FROM the oddball')
+names(transition.labs)<-c('to', 'from')
+
+
+#plotTF.new <- as.data.frame(effect('direction*transition*SOA',TFCRP_collapsed))
+
+neworder <- c("to","from")
+library(plyr)  ## or dplyr (transform -> mutate)
+TFCRP_collapsed.neworder <- arrange(transform(TFCRP_collapsed,
+             transition=factor(transition,levels=neworder)),transition)
+
+pltTF.collapsed<-ggplot(TFCRP_collapsed,aes(x=direction,y=CRPmean), group=oddballtype)+
+  geom_boxplot(aes(color=oddballtype)) +
+   theme_classic()+
+  facet_grid(~transition, scales='free_x', 
+             labeller=labeller(transition = as_labeller(transition.labs)))+   
+  theme(strip.background = element_blank())+
+  xlab('Collapsed Lag') +
+  ylab('Conditional Response Probability')+
+  scale_color_manual(values=c('violetred2','turquoise2'), 
+                     labels=c('Emotional','Perceptual'), name='Oddball Type')
+
+pltTF.collapsed
+
+
+````
+
+
 
 ## Correlation between lag +1 after and E-1 Normalized recall ###
 

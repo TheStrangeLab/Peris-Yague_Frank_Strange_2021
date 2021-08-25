@@ -37,6 +37,7 @@ for k=1:length(emotional)
     recall(k,3)=emotional(k,odd-1); %position of the e-1 recalled
     recall(k,4)=emotional(k,odd+1); %position of the e+1 recalled
     recall(k,5)=length(nonzeros(emotional(k,1:14))); %total recalled 
+    recall(k,6)=emotional(k,18); %add SOA
 end 
 
 %Calculate the distance between E and E-1 to then correlate them (5.3.21)
@@ -83,10 +84,10 @@ e_relative=recall(:,2)./recall(:,5);
 em1_relative=recall(:,3)./recall(:,5);
 ep1_relative=recall(:,4)./recall(:,5);
 
-e_relative_recall=[[recall(:,2)./recall(:,5)] [recall(:,3)./recall(:,5)] [recall(:,4)./recall(:,5)]];
+e_relative_recall=[[recall(:,2)./recall(:,5)] [recall(:,3)./recall(:,5)] [recall(:,4)./recall(:,5)] recall(:,6) recall(:,1)];
 
 %E relative recall= E E-1 E+1
-E_R=num2cell(e_relative_recall(:,1));
+E_R=num2cell([e_relative_recall(:,1) e_relative_recall(:,4) e_relative_recall(:,5)]);
 E_R=[repmat({'Emotional'},850,1) E_R];
 
 %Given the oddball was recalled what was the relative recall position of
@@ -168,14 +169,15 @@ for k=1:length(perceptual)
     recall(k,3)=perceptual(k,odd-1); %position of the e-1 recalled
     recall(k,4)=perceptual(k,odd+1); %position of the e+1 recalled
     recall(k,5)=length(nonzeros(perceptual(k,1:14))); %total recalled 
+    recall(k,6)=perceptual(k,18); %add SOA 
 end 
 
 p_relative=recall(:,2)./recall(:,5);
 pm1_relative=recall(:,3)./recall(:,5);
 pp1_relative=recall(:,4)./recall(:,5);
 
-p_relative_recall=[[recall(:,2)./recall(:,5)] [recall(:,3)./recall(:,5)] [recall(:,4)./recall(:,5)]];
-P_R=num2cell(p_relative_recall(:,1));
+p_relative_recall=[[recall(:,2)./recall(:,5)] [recall(:,3)./recall(:,5)] [recall(:,4)./recall(:,5)] recall(:,6) recall(:,1)];
+P_R=num2cell([p_relative_recall(:,1) p_relative_recall(:,4) p_relative_recall(:,5)]);
 P_R=[repmat({'Perceptual'},832,1) P_R];
 
 %Given the oddball was recalled what was the relative recall position of
@@ -221,7 +223,7 @@ pm1_rem(isnan(pm1_rem(:,2)),1:3)=NaN; %Include only trials that all are recalled
 pm1_rem(isnan(pm1_rem(:,3)),1:3)=NaN; %Include only trials that all are recalled
 
 RR=[E_R; P_R];
-RR=array2table(RR, 'VariableNames',{'oddballtype', 'relativerecall'});
+RR=array2table(RR, 'VariableNames',{'oddballtype', 'relativerecall', 'SOA', 'subject'});
 
 cd '/Users/albaperis/Desktop/Alba/PhD UPM /Von Restroff WP3/Paper_github/Odd_SOA_CRP/Raw_Results'
 writetable(RR, 'RR.csv')

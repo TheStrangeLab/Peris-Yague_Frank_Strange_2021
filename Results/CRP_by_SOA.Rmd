@@ -1,0 +1,476 @@
+```{r  echo=FALSE, results='hide', message=FALSE, warning=FALSE}
+chooseCRANmirror(graphics=FALSE, ind=1)
+knitr::opts_chunk$set(echo = TRUE)
+
+#install.packages('dplyr')
+#install.packages('rstatix')
+#install.packages('ggpubr')
+#install.packages("ggplot2")
+#install.packages('tidyverse')
+#install.packages('rsample')
+#install.packages('data.table')
+#install.packages('effects')
+#install.packages('lme4')
+
+library(tidyverse)
+library(ggpubr)
+library(rstatix)
+library(rsample)
+library(dplyr)
+library(ggplot2)
+library(data.table)
+library(effects)
+library(lme4)
+library(RColorBrewer)
+library(emmeans)
+```
+## Fig. 2B CRP by SOA 
+
+We looked at CRP curves modulation by SOA. 
+
+- Significant main effect of word position and SOA 
+
+```{r echo=FALSE, message=FALSE}
+setwd("/Users/albaperis/Desktop/Alba/PhD UPM /Von Restroff WP3/Paper_github/Odd_SOA_CRP/Raw_Results")
+CRPSOA<-read.csv('ToFrom_CRP_SOA_R.csv')
+CRPSOA<-as.data.frame(CRPSOA)
+
+CRPSOAplot<-CRPSOA %>%
+  group_by(wordposition, direction, SOA) %>%
+  get_summary_stats(CRP,type='mean_se')
+
+#CRPSOAplot<-na.omit(CRPSOAplot) %>%
+#  get_summary_stats(CRP,type='mean_se') 
+
+wpplot<-numeric(0)
+for (rows in 1:nrow(CRPSOAplot)){
+  if (CRPSOAplot$direction[rows] == "Backwards") {
+    wpplot[rows]<-(CRPSOAplot$wordposition[rows])*-1
+  }
+  else {wpplot[rows]<-(CRPSOAplot$wordposition[rows])
+  }
+}
+invisible(as.data.frame(wpplot))
+CRPSOAplot$wpplot<-wpplot
+
+#factor all the categorical variables 
+CRPSOA$SOA<-factor(CRPSOA$SOA)
+CRPSOA$direction<-factor(CRPSOA$direction)
+CRPSOA$wordposition<-factor(CRPSOA$wordposition)
+CRPSOA$subject<-factor(CRPSOA$subject)
+CRPSOA$oddballtype<-factor(CRPSOA$oddballtype)
+CRPSOA$transition<-factor(CRPSOA$transition)
+
+pltCRPSOA<-ggplot(CRPSOAplot,aes(x=wpplot,y=mean, group=SOA, color=as.factor(SOA)))+
+  geom_line() +
+  geom_point() +
+  theme_classic()+
+  facet_wrap(~ direction, scales='free_x', ncol=2)+ 
+  theme(strip.background = element_blank())+#,
+  #strip.text.x = element_blank()) +
+  #ggtitle('CRP by SOA')+
+  xlab('Lag') +
+  ylab('Conditional Response Probability')+
+  scale_color_brewer(palette="Set2")+
+  labs(color='SOA')
+
+pltCRPSOA
+
+CRPSOA_glmer<-glmer(CRP ~ wordposition*direction*SOA + (1|subject), data = CRPSOA)
+Anova(CRPSOA_glmer,3)
+
+plot(effect('wordposition',CRPSOA_glmer))
+
+    CRPSOA %>%
+  pairwise_t_test(CRP~wordposition, paired=TRUE, p.adjust.method='fdr')
+    
+    CRPSOA %>%
+  cohens_d(CRP~wordposition, paired=TRUE)
+
+plot(effect('SOA',CRPSOA_glmer))
+
+CRPSOA %>%
+  pairwise_t_test(CRP~SOA, paired=TRUE, p.adjust.method='fdr')
+
+CRPSOA %>%
+  cohens_d(CRP~SOA, paired=TRUE)
+
+
+```
+
+## CRP modulation by oddball type and SOA  
+
+There was a significant main effect of:
+
+- direction (although backwards direction is higher than forwards i.e higher lag -1) 
+
+There were significant interactions between:
+
+- Oddball type x word position 
+- Oddball type x direction
+- Word position x SOA
+- Direction x SOA
+- Oddball type x word position x SOA
+- Word position x direction x SOA
+- Word position x direction x SOA
+- Oddball type x word position x direction x SOA 
+
+```{r echo=FALSE, message=FALSE, fig.width = 15, fig.asp = .62}
+
+CRPSOAOddplot<-CRPSOA %>%
+  group_by(wordposition, direction, SOA, oddballtype) %>%
+  get_summary_stats(CRP,type='mean_se')
+
+#Re convert the variables to numeric because if not the plot cant be calculated
+CRPSOAOddplot$wordposition<-as.numeric(CRPSOAOddplot$wordposition)
+
+wpplot<-numeric(0)
+for (rows in 1:nrow(CRPSOAOddplot)){
+  if (CRPSOAOddplot$direction[rows] == "Backwards") {
+    wpplot[rows]<-(CRPSOAOddplot$wordposition[rows])*-1
+  }
+  else {wpplot[rows]<-(CRPSOAOddplot$wordposition[rows])
+  }
+ }
+invisible(as.data.frame(wpplot))
+CRPSOAOddplot$wpplot<-wpplot
+
+#The variables were already factored from before
+
+pltCRPSOAOdd<-ggplot(CRPSOAOddplot,aes(x=wpplot,y=mean), group=oddballtype)+
+  geom_line(aes(color=oddballtype)) +
+  geom_point(aes(color=oddballtype)) +
+  facet_wrap(~ SOA + direction, scales='free_x', ncol=4)+ 
+  ggtitle('CRP by SOA')+
+  xlab('Lag') +
+  ylab('Conditional Response Probability')+
+  scale_color_manual(values=c('violetred2','turquoise2'), 
+                     labels=c('Emotional','Perceptual'), name='Oddball Type')+
+  theme_classic()
+
+pltCRPSOAOdd
+
+CRPSOAOdd_glmer<-glmer(CRP ~ oddballtype*wordposition*direction*SOA + (1|subject), data = CRPSOA)
+Anova(CRPSOAOdd_glmer,3)
+
+#Plot the main effects/interactions
+plot(effect('oddballtype*wordposition', CRPSOAOdd_glmer))
+plot(effect('oddballtype*direction', CRPSOAOdd_glmer))
+plot(effect('wordposition*SOA', CRPSOAOdd_glmer))
+plot(effect('direction*SOA', CRPSOAOdd_glmer))
+plot(effect('oddballtype*wordposition*SOA', CRPSOAOdd_glmer))
+plot(effect('oddballtype*direction*SOA', CRPSOAOdd_glmer))
+plot(effect('wordposition*direction*SOA', CRPSOAOdd_glmer))
+plot(effect('oddballtype*wordposition*direction*SOA', CRPSOAOdd_glmer))
+
+```
+
+## Transitions ***to*** and ***from*** the oddballs by SOA
+We looked at CRP curves in transitions to and from oddballs by oddball types and SOA. 
+
+Oddball type x word position (lag) x direction (forwards v backwards) x transition (to v from) x SOA
+
+There were no significant main effects. However there were significant interactions between:
+- Oddball type x direction 
+- Oddball type x direction x SOA
+- Word position x direction x SOA
+- Oddball type x word position x direction x transition 
+
+```{r echo=FALSE, message=FALSE, fig.width = 15, fig.asp = .62}
+setwd("/Users/albaperis/Desktop/Alba/PhD UPM /Von Restroff WP3/Paper_github/Odd_SOA_CRP/Raw_Results")
+TFCRPSOA<-read.csv('ToFrom_CRP_SOA_R.csv')
+TFCRPSOA<-as.data.frame(TFCRPSOA)
+#head(TFCRP) #to show you what my raw data looks like 
+
+TFSOAplot<-TFCRPSOA %>%
+  group_by(oddballtype, wordposition, direction, transition, SOA) %>%
+  get_summary_stats(CRP,type='mean_se')
+
+wpplot<-numeric(0)
+for (rows in 1:nrow(TFSOAplot)){
+  if (TFSOAplot$direction[rows] == "Backwards") {
+    wpplot[rows]<-(TFSOAplot$wordposition[rows])*-1
+  }
+  else {wpplot[rows]<-(TFSOAplot$wordposition[rows])
+  }
+}
+invisible(as.data.frame(wpplot))
+TFSOAplot$wpplot<-wpplot
+
+
+#subset the data to only look at the effects in Emotional Oddballs because that's where we find the enhancement of forward flow.
+
+TFCRPSOA<- TFCRPSOA[which(TFCRPSOA$oddballtype=='E'),]
+transition_to_data<- TFCRPSOA[which(TFCRPSOA$transition=='to'),]
+transition_from_data <- TFCRPSOA[which(TFCRPSOA$transition=='from'),]
+#TFCRPSOA<- TFCRPSOA[which(TFCRPSOA$wordposition=='1'),]
+
+TFSOAplot<- TFSOAplot[which(TFSOAplot$oddballtype=='E'),]# %>%
+#TFSOAplot<-TFSOAplot[which(TFSOAplot$wpplot=='1'|TFSOAplot$wpplot=='-1'),]
+TFSOAplot$wpplot<- factor(TFSOAplot$wpplot)
+
+#only take p1m1 lags
+p1m1<-TFCRPSOA[which(TFCRPSOA$wordposition=='1'),]
+
+
+pltTFSOA<-ggplot(TFSOAplot,aes(x=wpplot,y=mean))+
+  geom_line(aes(color='violetred2')) +
+  geom_point(aes(color='violetred2')) +
+  facet_wrap(~ SOA + transition + direction, scales='free_x', ncol=4)+ 
+  ggtitle('CRP transitions to and from the oddballs by SOA')+
+  xlab('Lag') +
+  ylab('Conditional Response Probability')+
+  scale_color_manual(values=c('violetred2'), 
+                     labels=c('Emotional'), name='Oddball Type')+
+  theme_classic()
+
+pltTFSOA
+#factor all the categorical variables 
+
+TFCRPSOA$transition<-factor(TFCRPSOA$transition)
+TFCRPSOA$direction<-factor(TFCRPSOA$direction)
+TFCRPSOA$SOA<-factor(TFCRPSOA$SOA)
+TFCRPSOA$wordposition<-factor(TFCRPSOA$wordposition)
+TFCRPSOA$subject<-factor(TFCRPSOA$subject)
+TFCRPSOA$oddballtype<-factor(TFCRPSOA$oddballtype)
+TFCRPSOA$transition<-factor(TFCRPSOA$transition)
+
+TFSOAplot_glmer<-glmer(CRP ~ direction*transition*SOA + (1|subject), data = TFCRPSOA)
+#TFSOAplot_glmer<-glmer(CRP ~ wordposition*direction*transition*SOA + (1|subject), data = TFCRPSOA)
+Anova(TFSOAplot_glmer,3)
+
+transition_to_data$subject<-factor(transition_to_data$subject)
+transition_to_data$SOA<-factor(transition_to_data$SOA)
+transition_to_data$oddballtype<-factor(transition_to_data$oddballtype)
+transition_to_data$transition<-factor(transition_to_data$transition)
+transition_to_data$direction<-factor(transition_to_data$direction)
+transition_to_data$wordposition<-factor(transition_to_data$wordposition)
+
+transition_from_data$subject<-factor(transition_from_data$subject)
+transition_from_data$SOA<-factor(transition_from_data$SOA)
+transition_from_data$oddballtype<-factor(transition_from_data$oddballtype)
+transition_from_data$transition<-factor(transition_from_data$transition)
+transition_from_data$direction<-factor(transition_from_data$direction)
+transition_from_data$wordposition<-factor(transition_from_data$wordposition)
+
+
+transition_to_E<- glmer(CRP ~ direction*SOA + (1|subject), data = transition_to_data)
+Anova(transition_to_E, 3)
+
+transition_from_E<- glmer(CRP~ direction*SOA + (1|subject), data = transition_from_data)
+Anova(transition_from_E, 3)
+
+#now let's take only 1 and -1 lags 
+
+p1m1$subject<-factor(p1m1$subject)
+p1m1$SOA<-factor(p1m1$SOA)
+p1m1$oddballtype<-factor(p1m1$oddballtype)
+p1m1$transition<-factor(p1m1$transition)
+p1m1$direction<-factor(p1m1$direction)
+p1m1$wordposition<-factor(p1m1$wordposition)
+
+p1m1_E_glm<-glmer(CRP~ direction*transition*SOA + (1|subject), data = p1m1)
+Anova(p1m1_E_glm, 3)
+
+#conclusion- there is nothing if I sample by E and -1, 1. 
+
+#plot(effect('wordposition*SOA',TFSOAplot_glmer))
+#plot(effect('wordposition*direction*SOA',TFSOAplot_glmer))
+
+#pltTFSOA<-ggplot(TFSOAplot,aes(x=wpplot,y=mean), group=oddballtype)+
+ # geom_line(aes(color=oddballtype)) +
+ # geom_point(aes(color=oddballtype)) +
+ # facet_wrap(~ SOA + transition + direction, scales='free_x', ncol=4)+ 
+ # ggtitle('CRP transitions to and from the oddballs by SOA')+
+ # xlab('Lag') +
+ # ylab('Conditional Response Probability')+
+ # scale_color_manual(values=c('violetred2','turquoise2'), 
+ #                    labels=c('Emotional','Perceptual'), name='Oddball Type')+
+ # theme_classic()
+
+#pltTFSOA
+
+
+#TFSOAplot_glmer<-glmer(CRP ~ oddballtype*wordposition*direction*transition*SOA + (1|subject), data = TFCRPSOA)
+#Anova(TFSOAplot_glmer,3)
+
+
+#plot(effect('oddballtype*direction',TFSOAplot_glmer))
+#plot(effect('oddballtype*direction*SOA',TFSOAplot_glmer))
+#plot(effect('wordposition*direction*SOA',TFSOAplot_glmer))
+#plot(effect('oddballtype*wordposition*direction*transition',TFSOAplot_glmer))
+
+
+```
+
+TORNO A PROVAR-HO 8/6/21
+
+```{r echo=FALSE, message=FALSE}
+setwd("/Users/albaperis/Desktop/Alba/PhD UPM /Von Restroff WP3/Paper_github/Odd_SOA_CRP/Raw_Results")
+TFCRPSOA<-read.csv('ToFrom_CRP_SOA_R.csv')
+TFCRPSOA<-as.data.frame(TFCRPSOA)
+#head(TFCRP) #to show you what my raw data looks like 
+
+TFSOAplot<-TFCRPSOA %>%
+  group_by(oddballtype, wordposition, direction, transition, SOA) %>%
+  get_summary_stats(CRP,type='mean_se')
+
+wpplot<-numeric(0)
+for (rows in 1:nrow(TFSOAplot)){
+  if (TFSOAplot$direction[rows] == "Backwards") {
+    wpplot[rows]<-(TFSOAplot$wordposition[rows])*-1
+  }
+  else {wpplot[rows]<-(TFSOAplot$wordposition[rows])
+  }
+}
+
+invisible(as.data.frame(wpplot))
+TFSOAplot$wpplot<-wpplot
+
+#subset the data to only look at the effects in Emotional Oddballs because that's where we find the enhancement of forward flow.
+
+TFCRPSOA<- TFCRPSOA[which(TFCRPSOA$oddballtype=='E'),]
+#TFCRPSOA<- TFCRPSOA[which(TFCRPSOA$wordposition=='1'),]
+
+TFSOAplot<- TFSOAplot[which(TFSOAplot$oddballtype=='E'),]# %>%
+#TFSOAplot<-TFSOAplot[which(TFSOAplot$wpplot=='1'|TFSOAplot$wpplot=='-1'),]
+#TFSOAplot$wpplot<- factor(TFSOAplot$wpplot)
+
+pltTFSOA<-ggplot(TFSOAplot,aes(x=wpplot,y=mean))+
+  geom_line(aes(color='violetred2')) +
+  geom_point(aes(color='violetred2')) +
+  facet_wrap(~ SOA + transition + direction, scales='free_x', ncol=4)+ 
+  ggtitle('CRP transitions to and from the oddballs by SOA')+
+  xlab('Lag') +
+  ylab('Conditional Response Probability')+
+  scale_color_manual(values=c('violetred2'), 
+                     labels=c('Emotional'), name='Oddball Type')+
+  theme_classic()
+
+pltTFSOA
+#factor all the categorical variables 
+
+TFCRPSOA$transition<-factor(TFCRPSOA$transition)
+TFCRPSOA$direction<-factor(TFCRPSOA$direction)
+TFCRPSOA$SOA<-factor(TFCRPSOA$SOA)
+TFCRPSOA$wordposition<-factor(TFCRPSOA$wordposition)
+TFCRPSOA$subject<-factor(TFCRPSOA$subject)
+TFCRPSOA$oddballtype<-factor(TFCRPSOA$oddballtype)
+TFCRPSOA$transition<-factor(TFCRPSOA$transition)
+
+TFSOA_glmer<-glmer(CRP ~ direction*transition*SOA + (1|subject), data = TFCRPSOA)
+#TFSOAplot_glmer<-glmer(CRP ~ wordposition*direction*transition*SOA + (1|subject), data = TFCRPSOA)
+Anova(TFSOA_glmer,3)
+
+transitionxSOA.pwc<-TFCRPSOA %>%
+  group_by(SOA)%>%
+  pairwise_t_test(CRP~transition, paired=TRUE, p.adjust.method='fdr')
+
+directionxSOA.pwc<-TFCRPSOA %>%
+  group_by(SOA)%>%
+  pairwise_t_test(CRP~direction, paired=TRUE, p.adjust.method='fdr')
+
+SOA.pwc<-TFCRPSOA %>%
+  pairwise_t_test(CRP~SOA, paired=TRUE, p.adjust.method='fdr')
+
+plot(effect('direction*transition*SOA',TFSOA_glmer))
+
+#plot(effect('wordposition*SOA',TFSOAplot_glmer))
+#plot(effect('wordposition*direction*SOA',TFSOAplot_glmer))
+
+#pltTFSOA<-ggplot(TFSOAplot,aes(x=wpplot,y=mean), group=oddballtype)+
+ # geom_line(aes(color=oddballtype)) +
+ # geom_point(aes(color=oddballtype)) +
+ # facet_wrap(~ SOA + transition + direction, scales='free_x', ncol=4)+ 
+ # ggtitle('CRP transitions to and from the oddballs by SOA')+
+ # xlab('Lag') +
+ # ylab('Conditional Response Probability')+
+ # scale_color_manual(values=c('violetred2','turquoise2'), 
+ #                    labels=c('Emotional','Perceptual'), name='Oddball Type')+
+ # theme_classic()
+
+#pltTFSOA
+
+
+#TFSOAplot_glmer<-glmer(CRP ~ oddballtype*wordposition*direction*transition*SOA + (1|subject), data = TFCRPSOA)
+#Anova(TFSOAplot_glmer,3)
+
+
+#plot(effect('oddballtype*direction',TFSOAplot_glmer))
+#plot(effect('oddballtype*direction*SOA',TFSOAplot_glmer))
+#plot(effect('wordposition*direction*SOA',TFSOAplot_glmer))
+#plot(effect('oddballtype*wordposition*direction*transition',TFSOAplot_glmer))
+
+
+```
+
+
+```{r echo=FALSE, message=FALSE}
+setwd("/Users/albaperis/Desktop/Alba/PhD UPM /Von Restroff WP3/Paper_github/Odd_SOA_CRP/Raw_Results")
+data_collapsed<-read.csv('E_lag_collapsed_R.csv')
+data_collapsed<-as.data.frame(data_collapsed)
+
+data_collapsed$subject<-factor(data_collapsed$subject)
+data_collapsed$SOA<-factor(data_collapsed$SOA)
+data_collapsed$transition<-factor(data_collapsed$transition)
+data_collapsed$direction<-factor(data_collapsed$direction)
+
+collapsed_glm <- glmer(CRPmean ~ direction*transition*SOA + (1|subject), data = data_collapsed)
+Anova(collapsed_glm,3)
+
+plot(effect('direction*transition*SOA',collapsed_glm))
+plot(effect('direction*transition', collapsed_glm))
+
+hist(data_collapsed$CRPmean)
+
+meanDirxTrxSOA<-emmeans(collapsed_glm,~ direction*transition*SOA, adjust='fdr' )
+posthoc1<-pairs(meanDirxTrxSOA, adjust='fdr')
+eff_size(meanDirxTrxSOA, sigma=sigma(collapsed_glm), edf=df.residual(collapsed_glm))
+
+meanDirxTr<-emmeans(collapsed_glm,~ direction*transition, adjust='fdr')
+posthoc2<-pairs(meanDirxTr, adjust='fdr')
+eff_size(meanDirxTr, sigma=sigma(collapsed_glm), edf=df.residual(collapsed_glm))
+
+#dirxtrnxsoa.pwc<-data_collapsed %>%
+ # group_by(SOA)%>%
+  #drop_na()%>%
+ # pairwise_t_test(CRPmean~direction*transition, paired=TRUE, p.adjust.method='fdr') 
+
+#dirxtrnxsoa.pwc  
+
+#plot3w <- as.data.frame(effect('direction*transition*SOA',collapsed_glm))
+
+plot3w <-data_collapsed %>%
+  group_by(direction, transition,SOA) %>%
+  get_summary_stats(CRPmean,type='mean_ci')#%>%
+
+neworder <- c("to","from")
+library(plyr)  
+plot3w.order <- arrange(transform(plot3w,
+             transition=factor(transition,levels=neworder)),transition)
+
+
+#these are CI 
+CRPSOA.plt<-ggplot(plot3w.order, aes(x=SOA,y=mean, group=direction, color=SOA, shape=direction, ymin=mean-ci, ymax=mean+ci))+ 
+  geom_pointrange(position=position_dodge(width=0.5))+
+  facet_grid(~transition)+
+  scale_color_brewer(palette="Set2")+
+  labs(color='SOA')+
+  ylab('Conditional Response Probability')+
+  theme_classic()+
+  theme(strip.background = element_blank())
+
+CRPSOA.plt
+  
+                        
+#calculate how many NaNs
+data_collapsed %>%
+  group_by(SOA) %>%
+  summarise_each(funs(sum(is.na(.))))
+ 
+#total observations
+data_collapsed  %>%
+  group_by(SOA) %>%
+  dplyr::summarise(n=n())
+
+```
