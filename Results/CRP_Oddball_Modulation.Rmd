@@ -28,6 +28,7 @@ library(plyr)
 library(emmeans)
 ```
 
+<<<<<<< HEAD
 
 # Fig. 1C Relative Recall Position by SOA 
 
@@ -35,6 +36,20 @@ library(emmeans)
 ```{r echo=FALSE, warning=FALSE, message=FALSE} 
 setwd("/Users/albaperis/Desktop/Alba/PhD UPM /Von Restroff WP3/Paper_github/Odd_SOA_CRP/Raw_Results")
 RR<-read.csv('RR.csv') #Data on a trial-by-trial basis
+=======
+Normality was checked with QQ plots and/or histograms and homogeneity of variances was tested with levene's test. 
+
+# Fig. 1 Relative Recall Position by SOA 
+
+- QQ plots do not show a normal distribution 
+- Homogeneity of variances is violated (p=0.00083)
+- Plotted a histogram of the relative recall distribution and of the residuals of the following model:  glmer(relativerecall ~ oddballtype * SOA + (1|subject), data = RR). I think I can run a different distribution family of the model to account for the non-normal distribution. I posted a question on a stats forum https://stats.stackexchange.com/questions/540418/how-can-i-run-a-glm-on-a-left-skewed-not-normally-distributed-dv and someone suggested using a ***binomial distribution*** however I do not understand why. 
+- How about the violation of homogeneity of variances, how can we deal with this?
+
+```{r echo=FALSE, warning=FALSE, message=FALSE} 
+setwd("/Users/albaperis/Desktop/Alba/PhD UPM /Von Restroff WP3/Paper_github/Odd_SOA_CRP/Raw_Results")
+RR<-read.csv('RR.csv')
+>>>>>>> db7cbadf3ebdf9f20dbcecedff02b127e8e6490a
 RR<-as.data.frame(RR)
 #head(RR) #to show you what my raw data looks like 
 RR$oddballtype<-factor(RR$oddballtype)
@@ -45,6 +60,7 @@ RR.plot.SOA.data<- RR %>%
   group_by(SOA, oddballtype) %>%
   get_summary_stats(relativerecall, type='mean_ci')
 
+<<<<<<< HEAD
 #calculate mean for emotional and perceptual
 mean.calc<- RR %>%
   group_by(oddballtype) %>%
@@ -63,6 +79,24 @@ RR.SOA.plt2<-ggplot(RR.plot.SOA.data, aes(x=SOA,y=mean, group=oddballtype, shape
   labels = scales::number_format(accuracy = 0.01))
 
 #Now let's run a 2-way ANOVA with oddball x SOA as factors on relative recall 
+=======
+RR.SOA.plt <- ggplot (RR.plot.SOA.data,aes(x=as.factor(SOA),y=mean, group=oddballtype, color=oddballtype))+
+  geom_line(size=1) +
+  geom_errorbar(data=RR.plot.SOA.data, aes(x=as.factor(SOA), ymin=mean-ci, ymax=mean+ci), width=0.2,
+                size=0.5, position=position_dodge(0.05))+ 
+  theme_classic()+
+  theme(strip.background = element_blank())+
+  scale_color_manual(values=c('hotpink', 'deepskyblue1'))+
+
+  xlab('SOA') +
+  ylab('Relative Recall ')+
+  labs(color='Oddball Type')
+
+RR.SOA.plt
+
+#Now let's run a 2-way ANOVA with oddball x SOA as factors on relative recall 
+
+>>>>>>> db7cbadf3ebdf9f20dbcecedff02b127e8e6490a
 #Check normality with QQ plots
 RR.SOA.QQ<-ggqqplot(RR,'relativerecall',ggtheme=theme_bw())+
   facet_grid(oddballtype~SOA, labeller='label_both')
@@ -74,6 +108,7 @@ lines(density(RR$relativerecall))
 leveneRR<-levene_test(relativerecall ~ oddballtype*SOA, data=RR)
 #leveneRR # homogeneity of variances is violated
 
+<<<<<<< HEAD
 
 #The assumption of sphericity is violated in the dataset doing a trial by trial analyses. However, data is normally distributed if averaging across SOAs per subject. 
 
@@ -89,10 +124,21 @@ RR.avg.QQ<-ggqqplot(RR.avg,'relativerecall',ggtheme=theme_bw())+
 RR.avg.QQ #looks roughly ok 
 
 #DF are wrong because of missing values. Re-calculated with Prism with a mixed-effects model. 
+=======
+#These re NOT normally distributed so run a non-parametric ANOVA. Can this be done with glmer?
+
+RR.SOA.glmer<-glmer(relativerecall ~ oddballtype*SOA + (1|subject), data = RR)
+#Check whether residuals are normally distribued
+hist(residuals(RR.SOA.glmer)) #Not really 
+#Anova(RR.SOA.glmer,3)
+
+#A beta distribution would probably fit the data better. 
+>>>>>>> db7cbadf3ebdf9f20dbcecedff02b127e8e6490a
 
 
 ```
 
+<<<<<<< HEAD
 
 # Fig. 1D Amount of items recalled per SOA
 
@@ -165,13 +211,108 @@ write.csv(listrecallSOA.data.aov,paste(path_out,'Fig1D_prism.csv',sep = ''))
 
 # Fig. 2A Conditional Response Probability Curves
 
+=======
+# In-text analysis- Normalized Recall by SOA 
+- QQ plots show normal distribution 
+- Levene's test p>0.05
+- Ran a RM ANOVA with factors oddballtype x lag x SOA 
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+setwd("/Users/albaperis/Desktop/Alba/PhD UPM /Von Restroff WP3/Paper_github/Odd_SOA_CRP/Raw_Results")
+recallSOA<-read.csv('normrec_SOA_R.csv')
+recallSOA<-as.data.frame(recallSOA)
+#head(recallSOA) #to show you what my raw data looks like 
+recallSOA$subject<-factor(recallSOA$subject)
+recallSOA$oddballtype<-factor(recallSOA$oddballtype)
+recallSOA$wordposition<-factor(recallSOA$wordposition)
+recallSOA$SOA<-factor(recallSOA$SOA)
+
+recSOAplot<-recallSOA %>%
+  group_by(oddballtype,wordposition, SOA) %>%
+  get_summary_stats(normrec,type='mean_ci')#%>%
+  #View()
+
+recSOAplot<-rename(recSOAplot, c('normrec'=mean))
+  
+recall.SOA.fig<-ggplot(recSOAplot, aes(fill=oddballtype, x=wordposition, y=normrec))+
+  geom_bar(position='dodge', stat='identity')+
+  geom_errorbar(aes(x=wordposition, ymin=normrec-ci, ymax=normrec+ci), width=0.4, color='wheat4',
+                size=0.5, position=position_dodge(0.9), stat='identity')+
+  geom_jitter(data=recallSOA,aes(color=oddballtype, x=wordposition, y=normrec), position=position_jitterdodge(dodge.width=0.9), show.legend=FALSE, alpha=0.07)+
+  guides(col = FALSE)+
+  scale_color_manual(values=c('orchid', 'deepskyblue'))+
+  scale_fill_manual(values=c('thistle1','lightblue1'), labels=c('Emotional','Perceptual'), name='Oddball Type')+
+  scale_x_discrete(
+    labels = c("Odd-2", "Odd-1", "Odd","Odd+1")
+  )+
+  ggtitle('Normalized Recall by SOA')+
+  labs(x='Word Position', y='Normalized Recall (- control)')+
+  facet_wrap(~ SOA, ncol=3)+
+  theme_classic()
+#recall.SOA.fig
+
+#Create QQ plot to test for normality 
+recall.SOA.QQ<-ggqqplot(recallSOA,'normrec',ggtheme=theme_bw())+
+  facet_grid(oddballtype+wordposition~SOA, labeller='label_both') # looks fine 
+
+recall.SOA.QQ
+
+levene.recall.SOA<-levene_test(normrec~oddballtype*wordposition*SOA, data=recallSOA)
+#levene.recall.SOA #meets homogeneity of variances 
+
+recallSOA.aov<-anova_test(
+  data=recallSOA,dv=normrec,wid=subject,
+  within=c(oddballtype,wordposition,SOA)
+)
+
+#recallSOA.aov
+get_anova_table(recallSOA.aov)
+
+#Post-hoc tests
+#Main effect of word position 
+WordPositionSOA.pwc<-recallSOA %>%
+  pairwise_t_test(normrec~wordposition, paired=TRUE, p.adjust.method='fdr') #%>%
+WordPositionSOA.pwc  
+
+recallSOA %>%
+  cohens_d(normrec~wordposition, paired=TRUE)
+
+#Main effect of SOA
+SOA.pwc<-recallSOA %>%
+  pairwise_t_test(normrec~SOA, paired=TRUE, p.adjust.method='fdr') #%>%
+SOA.pwc
+
+recallSOA %>%
+  cohens_d(normrec~SOA, paired=TRUE)
+
+#Interaction oddballtype x word position
+
+WordPositionxOddSOA.pwc<-recallSOA %>%
+  group_by(wordposition)%>%
+  pairwise_t_test(normrec~oddballtype, paired=TRUE, p.adjust.method='fdr') #%>%
+WordPositionxOddSOA.pwc
+
+recallSOA %>%
+  group_by(wordposition) %>%
+  cohens_d(normrec~oddballtype, paired=TRUE) 
+```
+
+# Fig. 2A Conditional Response Probability Curves
+
+- QQ plots look normal 
+- Levene's test shows p<0.0001 --> homogeneity of variances is violated. How can we deal with this?
+
+At the moment, data was analyzed with a RM ANOVA with factors oddballtype x lag x direction 
+>>>>>>> db7cbadf3ebdf9f20dbcecedff02b127e8e6490a
 
 ```{r echo=FALSE,warning=FALSE, message=FALSE}
 setwd("/Users/albaperis/Desktop/Alba/PhD UPM /Von Restroff WP3/Paper_github/Odd_SOA_CRP/Raw_Results")
 CRPall<-read.csv('CRP_all_R.csv')
 CRPall<-as.data.frame(CRPall)
 
+<<<<<<< HEAD
 #Get the mean per subject per word position and direction 
+=======
+>>>>>>> db7cbadf3ebdf9f20dbcecedff02b127e8e6490a
 crpplot<-CRPall %>%
   group_by(oddballtype,wordposition, direction) %>%
   get_summary_stats(CRP,type='mean_se')
@@ -190,19 +331,31 @@ invisible(as.data.frame(wpplot))
 crpplot$wpplot<-wpplot
 
 pltCRP<-ggplot(crpplot,aes(x=wpplot,y=mean), group=oddballtype)+
+<<<<<<< HEAD
         geom_line(aes(color=oddballtype), size=1) +
         geom_point(aes(color=oddballtype), size=2) +
         theme_classic()+
         facet_wrap(~ direction, scales='free_x', ncol=2)+    
         theme(strip.background = element_blank())+
         theme(text=element_text(size=17))+
+=======
+        geom_line(aes(color=oddballtype)) +
+        geom_point(aes(color=oddballtype)) +
+        theme_classic()+
+        facet_wrap(~ direction, scales='free_x')+    
+        theme(strip.background = element_blank())+
+>>>>>>> db7cbadf3ebdf9f20dbcecedff02b127e8e6490a
         #ggtitle('CRP all')+
         xlab('Lag') +
         ylab('Conditional Response Probability')+
         scale_color_manual(values=c('violetred2','turquoise2'), 
+<<<<<<< HEAD
           labels=c('Emotional','Perceptual'), name='Oddball List Type')+
   scale_y_continuous(
   labels = scales::number_format(accuracy = 0.01))
+=======
+          labels=c('Emotional','Perceptual'), name='Oddball List Type')
+>>>>>>> db7cbadf3ebdf9f20dbcecedff02b127e8e6490a
                     
 pltCRP
 
@@ -218,7 +371,12 @@ CRP.QQ<-ggqqplot(CRPall,'CRP',ggtheme=theme_bw())+
 
 CRP.QQ # looks fine 
 
+<<<<<<< HEAD
 #If homogeneity of variances is violated, sphericity is automatically corrected in get_anova_table with Greenhouse-Geisser correction. 
+=======
+leveneCRPall<-levene_test(CRP ~ oddballtype*wordposition*direction, data=CRPall)
+#leveneCRPall #homogeneity of variances is violated 
+>>>>>>> db7cbadf3ebdf9f20dbcecedff02b127e8e6490a
 
 #Run RM ANOVA
 CRPall.aov<-anova_test(
@@ -228,6 +386,7 @@ CRPall.aov<-anova_test(
 CRPall.aov
 get_anova_table(CRPall.aov)
 
+<<<<<<< HEAD
 #Interaction word position x direction 
 
 WpxDir.data<-aggregate(x = CRPall$CRP, by = list(wordposition=CRPall$wordposition, direction=CRPall$direction, subject=CRPall$subject), FUN = "mean")
@@ -251,15 +410,55 @@ WpxDir.data %>%
 
 
 
+=======
+#Follow-up t-tests 
+#Main effect of oddballtype
+CRPoddballtype.pwc<-CRPall %>%
+  pairwise_t_test(CRP~oddballtype, paired=TRUE, p.adjust.method='fdr') 
+CRPoddballtype.pwc
+
+CRPall %>%
+  cohens_d(CRP~oddballtype, paired=TRUE)
+
+#Main effect of word position
+CRPwordposition.pwc<-CRPall %>%
+  pairwise_t_test(CRP~wordposition, paired=TRUE, p.adjust.method='fdr') 
+CRPwordposition.pwc
+
+CRPall %>%
+  cohens_d(CRP~wordposition, paired=TRUE)
+
+#Interaction direction x word position
+
+DirectionxWordPosition.pwc<-CRPall %>%
+  group_by(wordposition)%>%
+  pairwise_t_test(CRP~direction, paired=TRUE, p.adjust.method='fdr') 
+DirectionxWordPosition.pwc
+
+CRPall %>%
+  group_by(wordposition) %>%
+  cohens_d(CRP~direction, paired=TRUE)
+>>>>>>> db7cbadf3ebdf9f20dbcecedff02b127e8e6490a
 ```
 
 
 
 # Fig. 2B Conditional Response Probability Curves by Stimulus Onset Asynchrony
 
+<<<<<<< HEAD
 ```{r echo=FALSE, warning=FALSE, message=FALSE}
 setwd("/Users/albaperis/Desktop/Alba/PhD UPM /Von Restroff WP3/Paper_github/Odd_SOA_CRP/Raw_Results")
 CRPSOA<-read.csv('all_CRP_SOA_R.csv')
+=======
+- QQ plots do not show a normal distribution, plotted a histogram of the data and a histogram of the residuals of the following model glmer(CRP ~ wordposition * direction * SOA + (1|subject), data = CRPSOA). 
+- Levene's test p<0.0001 --> homogeneity of variances not met 
+
+- How should we proceed to analyze this? Maybe with a different family of distributions in the glmer?
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+setwd("/Users/albaperis/Desktop/Alba/PhD UPM /Von Restroff WP3/Paper_github/Odd_SOA_CRP/Raw_Results")
+CRPSOA<-read.csv('ToFrom_CRP_SOA_R.csv')
+>>>>>>> db7cbadf3ebdf9f20dbcecedff02b127e8e6490a
 CRPSOA<-as.data.frame(CRPSOA)
 
 CRPSOAplot<-CRPSOA %>%
@@ -283,6 +482,7 @@ CRPSOA$direction<-factor(CRPSOA$direction)
 CRPSOA$wordposition<-factor(CRPSOA$wordposition)
 CRPSOA$subject<-factor(CRPSOA$subject)
 CRPSOA$oddballtype<-factor(CRPSOA$oddballtype)
+<<<<<<< HEAD
 
 pltCRPSOA<-ggplot(CRPSOAplot,aes(x=wpplot,y=mean, group=SOA, color=as.factor(SOA)))+
   geom_line(size=1) +
@@ -330,6 +530,111 @@ CRP.SOA.data %>%
 
 # Fig. 3C Conditional Response Probability Curves transitions ***to*** and ***from*** oddballs
 
+=======
+CRPSOA$transition<-factor(CRPSOA$transition)
+
+pltCRPSOA<-ggplot(CRPSOAplot,aes(x=wpplot,y=mean, group=SOA, color=as.factor(SOA)))+
+  geom_line() +
+  geom_point() +
+  theme_classic()+
+  facet_wrap(~ direction, scales='free_x', ncol=2)+ 
+  theme(strip.background = element_blank())+
+  xlab('Lag') +
+  ylab('Conditional Response Probability')+
+  scale_color_brewer(palette="Set2")+
+  labs(color='SOA')
+
+pltCRPSOA
+
+#Assess Normality 
+
+CRP.SOA.QQ<-ggqqplot(CRPSOA,'CRP',ggtheme=theme_bw())+
+  facet_grid(oddballtype+direction~SOA, labeller='label_both') 
+
+CRP.SOA.QQ #Does not look normally distributed 
+hist(CRPSOA$CRP) #Distribution of our current data 
+
+levene.CRP.SOA<-levene_test(CRP~wordposition*direction*SOA, data=CRPSOA)
+#levene.CRP.SOA #homogeneity of variances NOT met 
+
+CRPSOA_glmer<-glmer(CRP ~ wordposition*direction*SOA + (1|subject), data = CRPSOA)
+hist(residuals(CRPSOA_glmer)) #Residuals not normally distributed 
+Anova(CRPSOA_glmer,3)
+
+#Main effect of word position 
+#plot(effect('wordposition',CRPSOA_glmer))
+
+    CRPSOA %>%
+  pairwise_t_test(CRP~wordposition, paired=TRUE, p.adjust.method='fdr')
+    
+    CRPSOA %>%
+  cohens_d(CRP~wordposition, paired=TRUE)
+
+#Main effect of SOA
+#plot(effect('SOA',CRPSOA_glmer))
+
+CRPSOA %>%
+  pairwise_t_test(CRP~SOA, paired=TRUE, p.adjust.method='fdr')
+
+CRPSOA %>%
+  cohens_d(CRP~SOA, paired=TRUE)
+```
+
+
+# Fig. 2C Amount of items recalled per SOA
+- QQ plots and histograms look roughly OK 
+- Levene's test p>0.05 
+- Data analyzed with a glmer(total_recall_list~SOA+(1|subject), data=listrecallSOA) because I included each list per SOA per subject. I think if we wanted to run this as an ANOVA I would have to average them to get 1 averaged recall number per subject per SOA. What do you think is best?
+
+```{r echo=FALSE,warning=FALSE, message=FALSE}
+setwd("/Users/albaperis/Desktop/Alba/PhD UPM /Von Restroff WP3/Paper_github/Odd_SOA_CRP/Raw_Results")
+
+listrecallSOA<-read.csv('list_recall_SOA_R.csv')
+listrecallSOA<-as.data.frame(listrecallSOA)
+listrecallSOA$SOA<-factor(listrecallSOA$SOA)
+listrecallSOA$subject<-factor(listrecallSOA$subject)
+
+listrecallSOAplot<-listrecallSOA %>%
+  group_by(SOA) %>%
+  get_summary_stats(total_recall_list,type='mean_ci')
+
+list.recall.SOA.fig<-ggplot(data = listrecallSOAplot,mapping = aes(x = as.factor(SOA), y = mean, fill=SOA))+
+  geom_bar(position='dodge', stat='identity')+
+  geom_errorbar(aes(x=as.factor(SOA), ymin=mean-ci, ymax=mean+ci), width=0.4, color='black',
+                size=0.8, position=position_dodge(0.8), stat='identity')+
+    labs(x='Stimulus Onset Asynchronies (SOA)', y='Items recalled ')+     
+    scale_y_continuous(n.breaks=14)+
+    scale_fill_brewer(palette='Set2')+
+    theme_classic()
+
+list.recall.SOA.fig + geom_jitter(data=listrecallSOA,mapping =aes(x=SOA, y=total_recall_list), alpha=0.1)
+
+#Check normal distribution 
+list.recall.SOA.QQ<-ggqqplot(listrecallSOA,'total_recall_list',ggtheme=theme_bw())+
+  facet_grid(~SOA, labeller='label_both') 
+
+list.recall.SOA.QQ# looks fine 
+
+levene.recall.SOA<-levene_test(total_recall_list ~ SOA, data=listrecallSOA)
+#levene.recall.SOA #looks fine 
+
+hist(listrecallSOA$total_recall_list)
+
+list.recall.SOA.glmer<- glmer(total_recall_list~SOA+(1|subject), data=listrecallSOA) 
+hist(residuals(list.recall.SOA.glmer)) #Residuals look normally distributed 
+
+Anova(list.recall.SOA.glmer,3)
+```
+
+# Fig. 3C Conditional Response Probability Curves transitions ***to*** and ***from*** oddballs
+- We collapsed accross lags and used 'omitnan' in Matlab for statistical analyses
+- QQ plots show a normal distribution 
+- Levene's test p=0.00011--> homogeneity of variances NOT met. Can we still analyze the data with the RM ANOVA?
+
+The collapsed data was analyzed with a RM ANOVA with factors oddballtype, direction and transition. 
+
+- For the figure and plotting we used all data points between lags 1-5
+>>>>>>> db7cbadf3ebdf9f20dbcecedff02b127e8e6490a
 ```{r echo=FALSE, warning=FALSE, message=FALSE}
 setwd("/Users/albaperis/Desktop/Alba/PhD UPM /Von Restroff WP3/Paper_github/Odd_SOA_CRP/Raw_Results")
 TFCRP<-read.csv('ToFrom_CRP_R.csv')
@@ -357,20 +662,32 @@ names(transition.labs)<-c('to', 'from')
 
 
 pltTF<-ggplot(TFplot,aes(x=wpplot,y=mean), group=oddballtype)+
+<<<<<<< HEAD
   geom_line(aes(color=oddballtype), size=1) +
   geom_point(aes(color=oddballtype), size=2) +
+=======
+  geom_line(aes(color=oddballtype)) +
+  geom_point(aes(color=oddballtype)) +
+>>>>>>> db7cbadf3ebdf9f20dbcecedff02b127e8e6490a
    theme_classic()+
   facet_grid(transition~direction, scales='free_x', 
              labeller=labeller(transition = as_labeller(transition.labs)))+   
   theme(strip.background = element_blank())+
+<<<<<<< HEAD
   theme(text=element_text(size=17))+
+=======
+>>>>>>> db7cbadf3ebdf9f20dbcecedff02b127e8e6490a
   #ggtitle('CRP transitions to and from the oddballs')+
   xlab('Lag') +
   ylab('Conditional Response Probability')+
   scale_color_manual(values=c('violetred2','turquoise2'), 
+<<<<<<< HEAD
                      labels=c('Emotional','Perceptual'), name='Oddball List Type')+
   scale_y_continuous(
   labels = scales::number_format(accuracy = 0.01))
+=======
+                     labels=c('Emotional','Perceptual'), name='Oddball List Type')
+>>>>>>> db7cbadf3ebdf9f20dbcecedff02b127e8e6490a
  
 
 pltTF
@@ -391,7 +708,11 @@ TF.QQ<-ggqqplot(TFCRP_collapsed,'CRPmean',ggtheme=theme_bw())+
 TF.QQ # QQ plots look fine 
 
 levene.TF<-levene_test(CRPmean ~ oddballtype*direction*transition, data=TFCRP_collapsed)
+<<<<<<< HEAD
 #levene.TF #assumption violated, however, this doesn't apply to our data because we have only 2 levels for each IV (factor)
+=======
+#levene.TF #assumption violated 
+>>>>>>> db7cbadf3ebdf9f20dbcecedff02b127e8e6490a
 
 TFCRP_collapsed$subject<-as.factor(TFCRP_collapsed$subject)
 TFCRP_collapsed$oddballtype<-as.factor(TFCRP_collapsed$oddballtype)
@@ -403,6 +724,7 @@ TF.collapsed.aov<-anova_test(
   data=TFCRP_collapsed,dv=CRPmean,wid=subject, 
   within=c(oddballtype,direction,transition),
 )
+<<<<<<< HEAD
 get_anova_table(TF.collapsed.aov)
 
 #Oddballtype x transition interaction 
@@ -431,6 +753,51 @@ DirxTr.data %>%
 
 
 #Plot 2 for inspecting the results 
+=======
+TF.collapsed.aov #this isn't showing Mauchly's test results because sphericity is only calculated when the IV have 3 or + levels. 
+get_anova_table(TF.collapsed.aov)
+
+odd.collapsed.pwc<-TFCRP_collapsed %>%
+  pairwise_t_test(CRPmean~oddballtype, paired=TRUE, p.adjust.method='fdr') #%>%
+odd.collapsed.pwc
+
+TFCRP_collapsed %>%
+  cohens_d(CRPmean~oddballtype, paired=TRUE)
+
+#ggboxplot(TFCRP_collapsed, x = "oddballtype", y = "CRPmean") 
+
+transition.collapsed.pwc<-TFCRP_collapsed %>%
+  pairwise_t_test(CRPmean~transition, paired=TRUE, p.adjust.method='fdr') #%>%
+transition.collapsed.pwc
+
+TFCRP_collapsed %>%
+  cohens_d(CRPmean~transition, paired=TRUE)
+
+#ggboxplot(TFCRP_collapsed, x = "transition", y = "CRPmean") 
+
+OddxTr.collapsed.pwc<-TFCRP_collapsed %>%
+  group_by(oddballtype)%>%
+  pairwise_t_test(CRPmean~transition, paired=TRUE, p.adjust.method='fdr') #%>%
+OddxTr.collapsed.pwc
+
+TFCRP_collapsed %>%
+  group_by(oddballtype) %>%
+  cohens_d(CRPmean~transition, paired=TRUE)
+
+#ggboxplot(TFCRP_collapsed, x = "transition", y = "CRPmean", color='oddballtype') 
+
+DirxTr.collapsed.pwc<-TFCRP_collapsed %>%
+  group_by(direction)%>%
+  pairwise_t_test(CRPmean~transition, paired=TRUE, p.adjust.method='fdr') #%>%
+DirxTr.collapsed.pwc
+
+TFCRP_collapsed %>%
+  group_by(direction) %>%
+  cohens_d(CRPmean~transition, paired=TRUE)
+
+#ggboxplot(TFCRP_collapsed, x = "transition", y = "CRPmean", color='direction') 
+
+>>>>>>> db7cbadf3ebdf9f20dbcecedff02b127e8e6490a
 transition.labs<- c('Transition TO the oddball', 'Transition FROM the oddball')
 names(transition.labs)<-c('to', 'from')
 
@@ -443,7 +810,10 @@ pltTF.collapsed<-ggplot(TFCRP_collapsed,aes(x=direction,y=CRPmean), group=oddbal
    theme_classic()+
   facet_grid(~transition, scales='free_x', 
              labeller=labeller(transition = as_labeller(transition.labs)))+   
+<<<<<<< HEAD
   theme(text=element_text(size=17))+
+=======
+>>>>>>> db7cbadf3ebdf9f20dbcecedff02b127e8e6490a
   theme(strip.background = element_blank())+
   xlab('Collapsed Lag') +
   ylab('Conditional Response Probability')+
@@ -455,6 +825,16 @@ pltTF.collapsed<-ggplot(TFCRP_collapsed,aes(x=direction,y=CRPmean), group=oddbal
 ```
 # Fig. 4 Condutional Response Probability Curves by SOA transitions ***to*** and ***from*** oddballs
 
+<<<<<<< HEAD
+=======
+Only focusing on emotional oddballs, collapsing accross lags 'omitnan'
+
+- QQ plots do not show a normal distribution 
+- Levene's test p<0.0001--> homogeneity of variances violated. 
+
+Data was analyzed with a glmer then, glmer(CRPmean ~ direction * transition * SOA + (1|subject), data = data_collapsed). 
+- The histogram of the residual plot of the model looks 'roughly' normal--> is this analysis OK then? What can we do about the violation of homogeneity of variances?
+>>>>>>> db7cbadf3ebdf9f20dbcecedff02b127e8e6490a
 
 ```{r echo=FALSE, warning=FALSE, message=FALSE}
 setwd("/Users/albaperis/Desktop/Alba/PhD UPM /Von Restroff WP3/Paper_github/Odd_SOA_CRP/Raw_Results")
@@ -471,24 +851,39 @@ plot3w <-data_collapsed %>%
   group_by(direction, transition,SOA) %>%
   get_summary_stats(CRPmean,type='mean_ci')#%>%
 
+<<<<<<< HEAD
 #Reorganize the df to plot in the correct order
+=======
+>>>>>>> db7cbadf3ebdf9f20dbcecedff02b127e8e6490a
 neworder <- c("to","from")
 plot3w.order <- arrange(transform(plot3w,
              transition=factor(transition,levels=neworder)),transition)
 
+<<<<<<< HEAD
 CRPSOA.plt<-ggplot(plot3w.order, aes(x=SOA,y=mean, group=direction, shape=direction, color=SOA,  ymin=mean-ci, ymax=mean+ci))+ 
 geom_pointrange(position=position_dodge(width=0.5), size=1)+
   scale_shape_manual(values=c(1, 16))+
+=======
+
+#these are CI 
+CRPSOA.plt<-ggplot(plot3w.order, aes(x=SOA,y=mean, group=direction, color=SOA, shape=direction, ymin=mean-ci, ymax=mean+ci))+ 
+  geom_pointrange(position=position_dodge(width=0.5))+
+>>>>>>> db7cbadf3ebdf9f20dbcecedff02b127e8e6490a
   facet_grid(~transition)+
   scale_color_brewer(palette="Set2")+
   labs(color='SOA')+
   ylab('Conditional Response Probability')+
+<<<<<<< HEAD
   xlab('Stimulus Onset Asynchrony')+
   theme_classic()+
   theme(text=element_text(size=17))+
   theme(strip.background = element_blank())+
   scale_y_continuous(
   labels = scales::number_format(accuracy = 0.01))
+=======
+  theme_classic()+
+  theme(strip.background = element_blank())
+>>>>>>> db7cbadf3ebdf9f20dbcecedff02b127e8e6490a
 
 CRPSOA.plt
 
@@ -496,12 +891,17 @@ CRPSOA.plt
 #Check Normality 
 TF.SOA.QQ<-ggqqplot(data_collapsed,'CRPmean',ggtheme=theme_bw())+
   facet_grid(direction+transition~SOA, labeller='label_both') 
+<<<<<<< HEAD
 TF.SOA.QQ #not normally distributed 
 hist(data_collapsed$CRPmean)
+=======
+TF.SOA.QQ #Some look a bit off 
+>>>>>>> db7cbadf3ebdf9f20dbcecedff02b127e8e6490a
 
 levene.TF.SOA<-levene_test(CRPmean ~ direction*transition*SOA, data=data_collapsed)
 #levene.TF.SOA #assumption violated 
 
+<<<<<<< HEAD
 #Run separate non parametric tests
 TovFrom.CRP.SOA <- data_collapsed %>%
   group_by(transition, subject) %>%
@@ -551,6 +951,34 @@ path_out<-'/Users/albaperis/Desktop/Alba/PhD UPM /Von Restroff WP3/Paper_github/
 write.csv(F.from.SOA.wide,paste(path_out,'Fig4_Forward_from_SOA_jasp.csv',sep = ''))
 
 
+=======
+collapsed_glm <- glmer(CRPmean ~ direction*transition*SOA + (1|subject), data = data_collapsed)
+hist(residuals(collapsed_glm)) #Do these look 'normal'?
+Anova(collapsed_glm,3)
+
+#plot(effect('direction*transition*SOA',collapsed_glm))
+#plot(effect('direction*transition', collapsed_glm))
+
+hist(data_collapsed$CRPmean)
+
+meanDirxTrxSOA<-emmeans(collapsed_glm,~ direction*transition*SOA, adjust='fdr' )
+posthoc1<-pairs(meanDirxTrxSOA, adjust='fdr')
+eff_size(meanDirxTrxSOA, sigma=sigma(collapsed_glm), edf=df.residual(collapsed_glm))
+
+meanDirxTr<-emmeans(collapsed_glm,~ direction*transition, adjust='fdr')
+posthoc2<-pairs(meanDirxTr, adjust='fdr')
+eff_size(meanDirxTr, sigma=sigma(collapsed_glm), edf=df.residual(collapsed_glm))
+
+#calculate how many NaNs
+data_collapsed %>%
+  group_by(SOA) %>%
+  summarise_each(funs(sum(is.na(.))))
+ 
+#total observations
+data_collapsed  %>%
+  group_by(SOA) %>%
+  dplyr::summarise(n=n())
+>>>>>>> db7cbadf3ebdf9f20dbcecedff02b127e8e6490a
 
 ```
 
@@ -561,7 +989,13 @@ write.csv(F.from.SOA.wide,paste(path_out,'Fig4_Forward_from_SOA_jasp.csv',sep = 
 # ***Supplementary Material Analyses***
 
 # Fig. S1 Conditional Response Probability Curves in remembered vs. forgotten oddballs 
+<<<<<<< HEAD
 
+=======
+- QQ plots look OK 
+- Levene's test p<0.0001--> homogeneity of variances violated 
+- Data analyzed with a RM ANOVA with factors: oddballtype x direction x lag x recall. This is a 4-way anova and I do not think it's that informative. I think we should remove it from the paper. 
+>>>>>>> db7cbadf3ebdf9f20dbcecedff02b127e8e6490a
 ```{r echo=FALSE,warning=FALSE, message=FALSE}
 setwd("/Users/albaperis/Desktop/Alba/PhD UPM /Von Restroff WP3/Paper_github/Odd_SOA_CRP/Raw_Results")
 RvF<-read.csv('rvf_CRP_R.csv')
@@ -595,11 +1029,126 @@ pltRVF<-ggplot(rvfplot,aes(x=wpplot,y=mean), group=oddballtype)+
   theme_classic()
 pltRVF
 
+<<<<<<< HEAD
+=======
+RvF$subject<-factor(RvF$subject)
+RvF$oddballtype<-factor(RvF$oddballtype)
+RvF$recall<-factor(RvF$recall)
+RvF$direction<-factor(RvF$direction)
+RvF$wordposition<-factor(RvF$wordposition)
+
+RVF.QQ<-ggqqplot(RvF,'CRP',ggtheme=theme_bw())+
+  facet_grid(oddballtype+direction+recall~wordposition, labeller='label_both') # looks fine 
+
+RVF.QQ
+levene.RVF<- levene_test(CRP~oddballtype*wordposition*direction*recall, data=RvF)
+#levene.RVF #Does NOT meet homogeneity of variances
+
+
+RvF.aov<-anova_test(
+  data=RvF,dv=CRP,wid=subject,
+  within=c(oddballtype,wordposition,direction,recall)
+)
+RvF.aov
+get_anova_table(RvF.aov)
+
+#Main effect of word position
+RvFwordposition.pwc<-RvF %>%
+  pairwise_t_test(CRP~wordposition, paired=TRUE, p.adjust.method='fdr') #%>%
+#select(-df,-statistic) #remove details 
+RvFwordposition.pwc
+
+RvF %>%
+  cohens_d(CRP~wordposition, paired=TRUE)
+
+#Main effect of recall 
+RvFrecall.pwc<-RvF %>%
+  pairwise_t_test(CRP~recall, paired=TRUE, p.adjust.method='fdr') #%>%
+  #select(-df,-statistic) #remove details 
+RvFrecall.pwc
+
+RvF %>%
+  cohens_d(CRP~recall, paired=TRUE)
+
+#Interaction direction x word position
+
+DirectionxWordPosition.RvF.pwc<-RvF %>%
+  group_by(wordposition)%>%
+  pairwise_t_test(CRP~direction, paired=TRUE, p.adjust.method='fdr')#%>%
+  #select(-df,-statistic) #remove details 
+DirectionxWordPosition.RvF.pwc
+
+RvF %>%
+  group_by(wordposition)%>%
+  cohens_d(CRP~direction, paired=TRUE)
+>>>>>>> db7cbadf3ebdf9f20dbcecedff02b127e8e6490a
 
 ```
 
 
+<<<<<<< HEAD
 # Fig. S2 Normalized Recall 
+=======
+# Fig. S2 Relative Recall Position of the Oddballs
+- Normality not met--> used non-parametric t-test (Wilcoxon test)
+
+```{r echo=FALSE,warning=FALSE, message=FALSE}
+setwd("/Users/albaperis/Desktop/Alba/PhD UPM /Von Restroff WP3/Paper_github/Odd_SOA_CRP/Raw_Results")
+RR<-read.csv('RR.csv')
+RR<-as.data.frame(RR)
+
+RR$oddballtype<-factor(RR$oddballtype)
+RR$SOA<-factor(RR$SOA)
+RR$subject<-factor(RR$subject)
+
+RRplot<-RR %>%
+  group_by(oddballtype) %>%
+  get_summary_stats(relativerecall,type='mean_ci') #%>%
+  #View()
+RRplot <- dplyr::rename(RRplot, c('relativerecall' = mean))
+
+RRnormality<-RR %>%
+  group_by(oddballtype) %>%
+  shapiro_test(relativerecall)#%>%
+  #View()
+
+RR.plt<-ggplot(RR,aes(x=oddballtype, y=relativerecall, fill=oddballtype))+
+  geom_violin()+#(position='dodge', stat='identity')+
+  geom_jitter(color='grey', size=0.4, alpha=0.9)+ 
+  geom_errorbar(data=RRplot, aes(x=oddballtype, ymin=relativerecall-ci, ymax=relativerecall+ci), width=0.4, color='wheat4',
+                size=0.5, position=position_dodge(0.9), stat='identity')+
+  scale_fill_manual(values=c('thistle1','lightblue1'), labels=c('Emotional','Perceptual'), name='Oddball Type')+
+  ggtitle('Relative Recall Position')+
+  labs(x='Oddball Type', y='Relative Recall Position')+
+  theme_classic()
+  
+RR.plt
+
+#Reorganize the data so that we average measurements accross SOAs, oddballs and subjects
+RR.stats <- RR %>% 
+  group_by(oddballtype,subject) %>% 
+  dplyr::summarize(relativerecall.mean = mean(relativerecall))
+
+wilcox.test(relativerecall.mean~oddballtype, data=RR.stats, paired=TRUE)
+
+#data needs to be ungrouped to be able to use it now 
+RR.stats<-ungroup(RR.stats)
+
+RR.stats %>%
+  cohens_d(relativerecall.mean~oddballtype, paired=TRUE)
+
+RRplot
+
+
+
+```
+
+
+# Fig. S3 Normalized Recall 
+- QQ plots look fine
+- Levene's test p>0.05 
+- Analyzed data with a RM ANOVA with factors oddballtype x wordposition 
+>>>>>>> db7cbadf3ebdf9f20dbcecedff02b127e8e6490a
 
 ```{r echo=FALSE,warning=FALSE, message=FALSE}
 setwd("/Users/albaperis/Desktop/Alba/PhD UPM /Von Restroff WP3/Paper_github/Odd_SOA_CRP/Raw_Results")
@@ -649,6 +1198,7 @@ recall.aov
 get_anova_table(recall.aov)
 
 #Post-hoc tests 
+<<<<<<< HEAD
 wp.data<-aggregate(x = recall$normrec, by = list(wordposition=recall$wordposition, subject=recall$subject), FUN = "mean")
 
 WordPosition.pwc<-wp.data %>%
@@ -659,6 +1209,19 @@ wp.data %>%
   cohens_d(x~wordposition, paired=TRUE)
 
 #Interaction oddballtype x word position
+=======
+WordPosition.pwc<-recall %>%
+  #group_by(oddballtype)%>%
+  pairwise_t_test(normrec~wordposition, paired=TRUE, p.adjust.method='fdr') #%>%
+  #select(-df,-statistic) #remove details 
+WordPosition.pwc  
+
+recall %>%
+  cohens_d(normrec~wordposition, paired=TRUE)
+
+#Interaction oddballtype x word position
+
+>>>>>>> db7cbadf3ebdf9f20dbcecedff02b127e8e6490a
 WordPositionxOdd.pwc<-recall %>%
   group_by(wordposition)%>%
   pairwise_t_test(normrec~oddballtype, paired=TRUE, p.adjust.method='fdr')# %>%
@@ -676,6 +1239,7 @@ WordPositionxOdd.pwc <- WordPositionxOdd.pwc %>% add_xy_position(x = "wordpositi
 
 recall.fig+
   stat_pvalue_manual(WordPositionxOdd.pwc, label='{p.adj.signif}', inherit.aes=FALSE, hide.ns=TRUE, tip.length=0, bracket.nudge.y=-0.7)+
+<<<<<<< HEAD
   stat_pvalue_manual(WordPosition.pwc, label='{p.adj.signif}', inherit.aes=FALSE, hide.ns=TRUE, tip.length =0, bracket.nudge.y=-0.1)
 
 
@@ -711,6 +1275,12 @@ oddVcont.long %>%
 ```
 
 # Fig. S3 E-1, lag+1 correlation 
+=======
+  stat_pvalue_manual(WordPosition.pwc, label='{p.adj.signif}', inherit.aes=FALSE, hide.ns=TRUE, tip.length =0, bracket.nudge.y=-0.42)
+```
+
+# Fig. S4 E-1, lag+1 correlation 
+>>>>>>> db7cbadf3ebdf9f20dbcecedff02b127e8e6490a
 
 ```{r echo=FALSE, warning=FALSE, message=FALSE}
 em1_corr<-as.data.frame(subset(recall, oddballtype=='E' & wordposition=='m1'))

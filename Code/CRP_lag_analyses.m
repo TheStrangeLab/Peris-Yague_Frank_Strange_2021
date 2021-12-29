@@ -160,7 +160,7 @@ lag=sortrows(lag,28);
 subj=unique(lag(:,28));
 index=0;
 
-for a=1:length(subj); 
+for a=3%1:length(subj); 
     rows=lag(:,28)==subj(a,1);
     lagsubj=lag(rows,1:28); %changed from here down all the lags to lagsubj 
     index=index+1;
