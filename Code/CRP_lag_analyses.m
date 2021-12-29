@@ -20,10 +20,10 @@ load emotional_v1_CRP
 emotional_v1_CRP(:,1:19)=cellfun(@num2str,emotional_v1_CRP(:,1:19),'UniformOutput',false);
 emotional_v1_CRP=str2double(emotional_v1_CRP);
 
-list_length=14;
-emotional_subjects=emotional_v1_CRP(:,15);
+list_length=14; 
+emotional_subjects=emotional_v1_CRP(:,15); %emotional subject list 
 
-E_all=emotional_v1_CRP(:,1:14);
+E_all=emotional_v1_CRP(:,1:14); %emotional data
 
 cd(dir_func)
 E_CRP_all=lag_crp(E_all,emotional_subjects,list_length);
@@ -44,7 +44,7 @@ end
 
 %Create matrix with words with Forgotten odd
 E_all_odd_forgot=str2double(emotional_v1_CRP(cellfun(@isempty,Remembered_emotional_v1_CRP (:,1)), :));
-E_all_odd_rem=str2double(Remembered_emotional_v1_CRP(~cellfun(@isempty,Remembered_emotional_v1_CRP (:,1)), :));
+E_all_odd_rem=str2double(emotional_v1_CRP(~cellfun(@isempty,Remembered_emotional_v1_CRP (:,1)), :));
 
 E_all_odd_forgot_CRP=lag_crp(E_all_odd_forgot(:,1:14), E_all_odd_forgot(:,15), list_length);
 % figure;plot_crp(E_all_odd_forgot_CRP)
@@ -60,8 +60,9 @@ E_all_odd_rem_CRP=lag_crp(E_all_odd_rem(:,1:14), E_all_odd_rem(:,15), list_lengt
 %writematrix(E_all_odd_rem_CRP,'E_CRP_all_rem.csv');
 
 %Restructure data to R 
-E_CRP_all=num2cell(E_CRP_all);
+E_CRP_all=num2cell(E_CRP_all); 
 s=num2cell(unique(emotional_subjects));
+%m is lag m5 (-5) m4 (-4) p is lag p1 (+1) p2 (+2)...
 m5=[s repmat({'E'},70,1) repmat({'Backwards'},70,1) repmat({'5'},70,1) E_CRP_all(:,9)];
 m4=[s repmat({'E'},70,1) repmat({'Backwards'},70,1) repmat({'4'},70,1) E_CRP_all(:,10)];
 m3=[s repmat({'E'},70,1) repmat({'Backwards'},70,1) repmat({'3'},70,1) E_CRP_all(:,11)];
@@ -239,11 +240,22 @@ E_ToFrom_R=[E_before; E_after];
 % xlabel('lag')
 % ylabel('conditional response probability')
 
+%% means omit nan 29.6.21
+ E_to_backwards_mean= [num2cell([cell2mat(lag_crp_subj(:,28)) mean(cell2mat(lag_crp_subj(1:70,9:13)),2,'omitnan')]) repmat({'E'},70,1) repmat({'to'},70,1) repmat({'backwards'},70,1)];
+ E_to_forwards_mean = [num2cell([cell2mat(lag_crp_subj(:,28)) mean(cell2mat(lag_crp_subj(1:70,15:19)),2,'omitnan')]) repmat({'E'},70,1) repmat({'to'},70,1) repmat({'forwards'},70,1)];
+
+ E_from_backwards_mean= [num2cell([cell2mat(lag_crp_after_subj(:,28)) mean(cell2mat(lag_crp_after_subj(1:70,9:13)),2,'omitnan')]) repmat({'E'},70,1) repmat({'from'},70,1) repmat({'backwards'},70,1)];
+ E_from_forwards_mean= [num2cell([cell2mat(lag_crp_after_subj(:,28))  mean(cell2mat(lag_crp_after_subj(1:70,15:19)),2,'omitnan')]) repmat({'E'},70,1) repmat({'from'},70,1) repmat({'forwards'},70,1)];
+ 
+ E_lag_collapsed= [E_to_backwards_mean; E_to_forwards_mean; E_from_backwards_mean; E_from_forwards_mean];
+% 
+ E_lag_collapsed_R=array2table(E_lag_collapsed, 'VariableNames',{'subject','CRPmean','oddballtype', 'transition', 'direction'});
+%% 
 
 %% Repeat for perceptual oddballs
 %Get all trials lags separated by those where the odd was Remembered vs not
 
-clearvars -except E_ToFrom_R s rvf_CRP_E_R all_CRP_E_R
+clearvars -except E_ToFrom_R s rvf_CRP_E_R all_CRP_E_R E_lag_collapsed_R
 
 dir= '/Users/albaperis/Desktop/Alba/PhD UPM /Von Restroff WP3/Paper_github/Odd_SOA_CRP/Code';
 dir_func='/Users/albaperis/Desktop/Alba/PhD UPM /Von Restroff WP3/September2020/v1'; %functions are here
@@ -282,6 +294,9 @@ end
 
 %Create matrix with words with Forgotten odd
 P_all_odd_forgot=str2double(perceptual_v1_CRP(cellfun(@isempty,Remembered_perceptual_v1_CRP (:,1)), :));
+%Last 2 rows of perceptual_v1_CRP the oddball wasn't recalled so they must
+%be added here too. 
+P_all_odd_forgot = [P_all_odd_forgot; str2double(perceptual_v1_CRP(1391:1392,:))];
 P_all_odd_rem=str2double(perceptual_v1_CRP(~cellfun(@isempty,Remembered_perceptual_v1_CRP (:,1)), :));
 
 P_all_odd_forgot_CRP=lag_crp(P_all_odd_forgot(:,1:14), P_all_odd_forgot(:,15), list_length);
@@ -348,7 +363,7 @@ rvf_CRP_P_R=[forg_P; rem_P];
 
 %% CRP in transitions to and from Perceptual Oddballs 
 
-clearvars -except E_ToFrom_R s rvf_CRP_E_R all_CRP_E_R rvf_CRP_P_R all_CRP_P_R
+clearvars -except E_ToFrom_R s rvf_CRP_E_R all_CRP_E_R rvf_CRP_P_R all_CRP_P_R E_lag_collapsed_R
 
 dir= '/Users/albaperis/Desktop/Alba/PhD UPM /Von Restroff WP3/Paper_github/Odd_SOA_CRP/Code';
 dir_func='/Users/albaperis/Desktop/Alba/PhD UPM /Von Restroff WP3/September2020/v1';
@@ -419,7 +434,7 @@ lag_crp_after_ap=actual_counts_after./possible_counts_after;
 lag_crp_subj(index,:)=[lag_crp_ap subj(a,1)];
 lag_crp_after_subj(index,:)=[lag_crp_after_ap subj(a,1)];
 
-clearvars -except lag_crp_subj lag_crp_after_subj index lag subj all_transitions emotional_v1_CRP trials dir E_ToFrom_R s rvf_CRP_E_R all_CRP_E_R rvf_CRP_P_R all_CRP_P_R
+clearvars -except lag_crp_subj lag_crp_after_subj index lag subj all_transitions emotional_v1_CRP trials dir E_ToFrom_R s rvf_CRP_E_R all_CRP_E_R rvf_CRP_P_R all_CRP_P_R E_lag_collapsed_R
 end
 
 % cd(dir)
@@ -462,15 +477,29 @@ P_after=[m5;m4;m3;m2;m1;p1;p2;p3;p4;p5];
 
 P_ToFrom_R=[P_before; P_after];
 
+%% means omit nan 29.6.21
+ P_to_backwards_mean= [num2cell([cell2mat(lag_crp_subj(:,28)) mean(cell2mat(lag_crp_subj(1:70,9:13)),2,'omitnan')]) repmat({'P'},70,1) repmat({'to'},70,1) repmat({'backwards'},70,1)];
+ P_to_forwards_mean = [num2cell([cell2mat(lag_crp_subj(:,28)) mean(cell2mat(lag_crp_subj(1:70,15:19)),2,'omitnan')]) repmat({'P'},70,1) repmat({'to'},70,1) repmat({'forwards'},70,1)];
+
+ P_from_backwards_mean= [num2cell([cell2mat(lag_crp_after_subj(:,28)) mean(cell2mat(lag_crp_after_subj(1:70,9:13)),2,'omitnan')]) repmat({'P'},70,1) repmat({'from'},70,1) repmat({'backwards'},70,1)];
+ P_from_forwards_mean= [num2cell([cell2mat(lag_crp_after_subj(:,28))  mean(cell2mat(lag_crp_after_subj(1:70,15:19)),2,'omitnan')]) repmat({'P'},70,1) repmat({'from'},70,1) repmat({'forwards'},70,1)];
+ 
+ P_lag_collapsed= [P_to_backwards_mean; P_to_forwards_mean; P_from_backwards_mean; P_from_forwards_mean];
+
+ P_lag_collapsed_R=array2table(P_lag_collapsed, 'VariableNames',{'subject','CRPmean','oddballtype', 'transition', 'direction'});
+%
+collapsed =[E_lag_collapsed_R; P_lag_collapsed_R];
+writetable(collapsed, 'collapsed_CRP_omitnan.csv');
+
 %% Concatenate the R outputs
 CRP_all_R=array2table([all_CRP_E_R; all_CRP_P_R], 'VariableNames',{'subject', 'oddballtype', 'direction', 'wordposition', 'CRP'});
 rvf_CRP_R=array2table([rvf_CRP_E_R; rvf_CRP_P_R], 'VariableNames',{'subject', 'oddballtype', 'recall', 'direction', 'wordposition', 'CRP'});
 ToFrom_CRP_R=array2table([E_ToFrom_R; P_ToFrom_R], 'VariableNames',{'subject', 'oddballtype', 'transition', 'direction', 'wordposition', 'CRP'});
 
 cd     '/Users/albaperis/Desktop/Alba/PhD UPM /Von Restroff WP3/Paper_github/Odd_SOA_CRP/Raw_Results';
-writetable (CRP_all_R, 'CRP_all_R.csv');
-writetable(rvf_CRP_R, 'rvf_CRP_R.csv');
-writetable(ToFrom_CRP_R, 'ToFrom_CRP_R.csv');
+%writetable (CRP_all_R, 'CRP_all_R.csv');
+%writetable(rvf_CRP_R, 'rvf_CRP_R.csv');
+%writetable(ToFrom_CRP_R, 'ToFrom_CRP_R.csv');
 
 % figure, plot(mean([lag_crp_subj(:,9:13) NaN(87,1) lag_crp_subj(:,15:19)],'omitnan')); % PLOT SIMMILAR TO THE LAG CRP FUNCTION
 % hold

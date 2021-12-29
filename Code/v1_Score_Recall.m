@@ -207,8 +207,8 @@ normalized_recall(index,1:9)=[sub (E_2-C_E) (E_1-C_E) (Emo-C_E) (A_E-C_E) (P_2-C
 
 final_recall=array2table(final_recall, 'VariableNames',{'Subject', 'E-2', 'E-1',...
     'E', 'E+1', 'P-2', 'P-1', 'P', 'P+1', 'Control_Emotional', 'Control_Perceptual'});
-%cd '/Users/albaperis/Desktop/Alba/PhD UPM /Von Restroff WP3/OddballTask_code/Results';
-%writetable(final_recall, 'v1final_recall_AP-2_Dec2020.xls');
+cd '/Users/albaperis/Desktop/Alba/PhD UPM /Von Restroff WP3/Paper_github/Odd_SOA_CRP/Raw_Results';
+writetable(final_recall, 'v1final_recall_AP.csv');
 
 norm_rec=normalized_recall(:,2:9); %for plotting later on 
 normalized_recall=array2table(normalized_recall, 'VariableNames',{'Subject','E-2', 'E-1',...
