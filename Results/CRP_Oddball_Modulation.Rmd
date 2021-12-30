@@ -1,5 +1,5 @@
 ---
-title: "CRP_Oddball_Modulation"
+title: "Emotional salience modulates the forward flow of memory"
 author: "Peris-Yague et al. 2021"
 date: "8/17/2021"
 output: 

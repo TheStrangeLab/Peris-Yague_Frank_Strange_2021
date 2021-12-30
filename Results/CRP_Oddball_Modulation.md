@@ -1,4 +1,4 @@
-CRP\_Oddball\_Modulation
+Emotional salience modulates the forward flow of memory
 ================
 Peris-Yague et al. 2021
 8/17/2021
