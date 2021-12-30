@@ -3,10 +3,10 @@ title: "CRP_Oddball_Modulation"
 author: "Peris-Yague et al. 2021"
 date: "8/17/2021"
 output:
-  word_document: default
-  pdf_document: default
   html_document:
     df_print: paged
+  pdf_document: default
+  word_document: default
 ---
 
 ```{r  echo=FALSE, results='hide', message=FALSE, warning=FALSE}
@@ -62,14 +62,16 @@ RR.SOA.plt2<-ggplot(RR.plot.SOA.data, aes(x=SOA,y=mean, group=oddballtype, shape
   scale_y_continuous(
   labels = scales::number_format(accuracy = 0.01))
 
+RR.SOA.plt2
+
 #Now let's run a 2-way ANOVA with oddball x SOA as factors on relative recall 
 
 #Check normality with QQ plots
 RR.SOA.QQ<-ggqqplot(RR,'relativerecall',ggtheme=theme_bw())+
   facet_grid(oddballtype~SOA, labeller='label_both')
-RR.SOA.QQ #doesn't look normal
-hist(RR$relativerecall)
-lines(density(RR$relativerecall))
+#RR.SOA.QQ #doesn't look normal
+#hist(RR$relativerecall)
+#lines(density(RR$relativerecall))
 
 #Check homogeneity of variances
 leveneRR<-levene_test(relativerecall ~ oddballtype*SOA, data=RR)
@@ -87,14 +89,14 @@ RR.avg$subject<-factor(RR.avg$subject)
 RR.avg.levene<-levene_test(relativerecall ~ oddballtype*SOA, data=RR.avg) #this is ok 
 RR.avg.QQ<-ggqqplot(RR.avg,'relativerecall',ggtheme=theme_bw())+
   facet_grid(oddballtype~SOA, labeller='label_both')
-RR.avg.QQ #looks roughly ok 
+#RR.avg.QQ #looks roughly ok 
 
 RR.aov<-anova_test(
   data=RR.avg,dv=relativerecall,wid=subject, 
   within=c(SOA,oddballtype),
 )
 
-get_anova_table(RR.aov)
+#get_anova_table(RR.aov)
 
 #DF are wrong because of missing values. Re-calculated with Prism. 
 
@@ -127,6 +129,8 @@ list.recall.SOA.fig2<-ggplot(data=listrecallSOAplot, aes(x=as.factor(SOA), y=mea
   scale_y_continuous(
   labels = scales::number_format(accuracy = 0.01))
 
+list.recall.SOA.fig2
+
 listrecallSOA.data<- listrecallSOA %>%
   group_by(SOA,subject) %>%
   get_summary_stats(total_recall_list, type='mean')
@@ -143,7 +147,7 @@ listrecallSOA.data$total_recall_list<-as.numeric(listrecallSOA.data$total_recall
 list.recall.SOA.QQ<-ggqqplot(listrecallSOA.data,'total_recall_list',ggtheme=theme_bw())+
   facet_grid(~SOA, labeller='label_both') 
 
-list.recall.SOA.QQ# looks fine 
+#list.recall.SOA.QQ# looks fine 
 
 # Run an ANOVA
 listrecallSOA.aov<-anova_test(
@@ -162,7 +166,7 @@ names(listrecallSOA.wide)[6] <- "SOA 4"
 
 
 path_out<-'/Users/albaperis/Desktop/Alba/PhD UPM /Von Restroff WP3/Paper_github/Odd_SOA_CRP/Raw_Results/'
-write.csv(listrecallSOA.data.aov,paste(path_out,'Fig1D_prism.csv',sep = ''))
+write.csv(listrecallSOA.wide,paste(path_out,'Fig1D_prism.csv',sep = ''))
 
 ```
 
@@ -219,7 +223,7 @@ CRPall$wordposition<-factor(CRPall$wordposition)
 CRP.QQ<-ggqqplot(CRPall,'CRP',ggtheme=theme_bw())+
   facet_grid(oddballtype+direction~wordposition, labeller='label_both') 
 
-CRP.QQ # looks fine 
+#CRP.QQ # looks fine 
 
 #If homogeneity of variances is violated, sphericity is automatically corrected in get_anova_table with Greenhouse-Geisser correction. 
 
@@ -228,7 +232,7 @@ CRPall.aov<-anova_test(
   data=CRPall,dv=CRP,wid=subject,
   within=c(oddballtype,wordposition,direction)
 )
-CRPall.aov
+#CRPall.aov
 get_anova_table(CRPall.aov)
 
 #Interaction word position x direction 
@@ -238,6 +242,7 @@ WpxDir.data<-aggregate(x = CRPall$CRP, by = list(wordposition=CRPall$wordpositio
 WpxDir.pwc1<- WpxDir.data %>%
   group_by(direction) %>%
   pairwise_t_test(x~wordposition,paired=TRUE, p.adjust.method='fdr')
+WpxDir.pwc1
 
 WpxDir.data %>%
   group_by(direction) %>%
@@ -246,6 +251,7 @@ WpxDir.data %>%
 WpxDir.pwc2<- WpxDir.data %>%
   group_by(wordposition) %>%
   pairwise_t_test(x~direction,paired=TRUE, p.adjust.method='fdr')
+WpxDir.pwc2
 
 WpxDir.data %>%
   group_by(wordposition) %>%
@@ -316,12 +322,13 @@ CRPall.SOA.aov<-anova_test(
   data=CRP.SOA.data,dv=x,wid=subject,
   within=c(SOA)
 )
-CRPall.SOA.aov
+#CRPall.SOA.aov
 get_anova_table(CRPall.SOA.aov)
 
 #Run follow-up t-tests 
 SOA.pwc<- CRP.SOA.data %>%
   pairwise_t_test(x~SOA,paired=TRUE, p.adjust.method='fdr')
+SOA.pwc
 
 CRP.SOA.data %>%
   cohens_d(x~SOA, paired=TRUE)
@@ -419,7 +426,7 @@ TFCRP_collapsed<-as.data.frame(TFCRP_collapsed)
 
 TF.QQ<-ggqqplot(TFCRP_collapsed,'CRPmean',ggtheme=theme_bw())+
   facet_grid(oddballtype+direction~transition, labeller='label_both') 
-TF.QQ # QQ plots look fine 
+#TF.QQ # QQ plots look fine 
 
 levene.TF<-levene_test(CRPmean ~ oddballtype*direction*transition, data=TFCRP_collapsed)
 #levene.TF #assumption violated, however, this doesn't apply to our data because we have only 2 levels for each IV (factor)
@@ -442,7 +449,7 @@ OddxTr.data<-aggregate(x = TFCRP_collapsed$CRPmean, by = list(transition=TFCRP_c
 OddxTr.pwc<- OddxTr.data %>%
   group_by(oddballtype) %>%
   pairwise_t_test(x~transition, paired=TRUE, p.adjust.method = 'fdr')
-
+OddxTr.pwc
 
 OddxTr.data %>%
   group_by(oddballtype) %>%
@@ -454,7 +461,7 @@ DirxTr.data<-aggregate(x = TFCRP_collapsed$CRPmean, by = list(transition=TFCRP_c
 DirxTr.pwc<- DirxTr.data %>%
   group_by(direction) %>%
   pairwise_t_test(x~transition, paired=TRUE, p.adjust.method = 'fdr')
-
+DirxTr.pwc
 
 DirxTr.data %>%
   group_by(direction) %>%
@@ -526,8 +533,8 @@ CRPSOA.plt
 #Check Normality 
 TF.SOA.QQ<-ggqqplot(data_collapsed,'CRPmean',ggtheme=theme_bw())+
   facet_grid(direction+transition~SOA, labeller='label_both') 
-TF.SOA.QQ #not normally distributed 
-hist(data_collapsed$CRPmean)
+#TF.SOA.QQ #not normally distributed 
+#hist(data_collapsed$CRPmean)
 
 levene.TF.SOA<-levene_test(CRPmean ~ direction*transition*SOA, data=data_collapsed)
 #levene.TF.SOA #assumption violated 
@@ -540,14 +547,16 @@ TovFrom.CRP.SOA <- data_collapsed %>%
 
 TovFrom.wilcox<- TovFrom.CRP.SOA %>%
   wilcox_test(mean~transition, paired=TRUE) 
+TovFrom.wilcox
 
 TovFrom.wilcox.effsize<- TovFrom.CRP.SOA %>%
   wilcox_effsize(mean~transition, paired=TRUE) 
+TovFrom.wilcox.effsize
 
 #check which mean is larger 
-data_collapsed %>%
-  group_by(transition) %>%
-  get_summary_stats(CRPmean,type='mean_ci')
+#data_collapsed %>%
+#  group_by(transition) %>%
+#  get_summary_stats(CRPmean,type='mean_ci')
 
 path_out<-'/Users/albaperis/Desktop/Alba/PhD UPM /Von Restroff WP3/Paper_github/Odd_SOA_CRP/Raw_Results/'
 write.csv(TovFrom.CRP.SOA,paste(path_out,'Fig4_intext_prism.csv',sep = ''))
@@ -666,16 +675,16 @@ recall.fig<-ggplot(recallplot, aes(fill=oddballtype, x=wordposition, y=normrec))
 #Create QQ plot for each cell of design
 recall.QQ<-ggqqplot(recall,'normrec',ggtheme=theme_bw())+
   facet_grid(oddballtype~wordposition, labeller='label_both')
-recall.QQ #looks fine
+#recall.QQ #looks fine
 
 levene.recall<-levene_test(normrec~oddballtype*wordposition, data=recall)
-levene.recall #meets homogeneity of variances 
+#levene.recall #meets homogeneity of variances 
 
 recall.aov<-anova_test(
   data=recall,dv=normrec,wid=subject,
   within=c(oddballtype,wordposition)
 )
-recall.aov
+#recall.aov
 get_anova_table(recall.aov)
 
 #Post-hoc tests 
@@ -707,6 +716,7 @@ WordPositionxOdd.pwc <- WordPositionxOdd.pwc %>% add_xy_position(x = "wordpositi
 recall.fig+
   stat_pvalue_manual(WordPositionxOdd.pwc, label='{p.adj.signif}', inherit.aes=FALSE, hide.ns=TRUE, tip.length=0, bracket.nudge.y=-0.7)+
   stat_pvalue_manual(WordPosition.pwc, label='{p.adj.signif}', inherit.aes=FALSE, hide.ns=TRUE, tip.length =0, bracket.nudge.y=-0.1)
+ 
 
 
 #Check whether e and p oddballs were better recalled than control words. 
@@ -733,6 +743,7 @@ oddVcont.long<-gather(oddVcont, position, recall, em1:ce, factor_key=TRUE)
 
 Em1.v.EC<-oddVcont.long %>%
   pairwise_t_test(recall~position, paired=TRUE)
+Em1.v.EC
 
 oddVcont.long %>%
   cohens_d(recall~position, paired=TRUE)
