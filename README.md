@@ -5,8 +5,6 @@ To preprocess the raw data and re-organize the data run:
 - v1SOA_preprocessing_alldata
 - v1SOA_preprocessing_CRP
 
-There is also a folder called 'Variable_SOA_70' that also contains the raw data and is used for some functions. 
-
 This will create output matrices that will be saved in the code folder and later called for the analyses. 
 
 You must also download this toolbox: http://memory.psych.upenn.edu/Behavioral_toolbox
@@ -23,4 +21,4 @@ The following scripts allow you to obtain the results. The raw results will be .
 -CRP_lag_analyses.m (to obtain the overall CRP i.e including all trials, to compare remembered v. forgotten oddball trials and to obtain the CRPs in transitions to and from the oddballs)
 
 Once the above scripts have all been run, to obtain the statistical results and the figures run the following R markdown in the 'Results' folder.
-- Stats_Figures_OddSOACRP.Rmd
+- CRP_Oddball_Modulation.Rmd
