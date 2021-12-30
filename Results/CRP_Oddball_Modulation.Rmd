@@ -2,7 +2,8 @@
 title: "CRP_Oddball_Modulation"
 author: "Peris-Yague et al. 2021"
 date: "8/17/2021"
-output:
+output: 
+  github_document:
   html_document:
     df_print: paged
   pdf_document: default
