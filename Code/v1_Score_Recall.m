@@ -13,7 +13,7 @@ recall=zeros(length(subjects),10);
 
 index=0;
 
-for sub=subjects
+for sub=65;%subjects
     index=index+1;
     sdir=sprintf('sub%d',sub);
 

@@ -24,7 +24,7 @@ for sub=subjects
     load cpp
     load listtype
     %% !! THE SOA number needs to be changed here 
-    SOA=4;
+    SOA=6;
    
     emotion_index = find((rem(listtype,10)==SOA&listtype<20)); %find emotional lists
     percept_index = find((rem(listtype,10)==SOA&listtype>20)); %find perceptual lists
@@ -67,6 +67,15 @@ for sub=subjects
     end 
     if sub==60 && SOA==2 %SOA2
         e(:,[3])=[]; %column 3 (list 14)
+    end 
+    if sub== 64 && SOA==2
+        e(:,[4])=[]; %column 4 (list 35)
+    end 
+    if sub==68 && SOA==3 %column 4 (list 32)
+        e(:,[4])=[];
+    end 
+    if sub==65 && SOA==2 %column 3 (list 18)
+       e(:,[3])=[];
     end 
     if sub==65 && SOA==3
         e(:,[3])=[]; %column 3 (list 24)
@@ -130,6 +139,15 @@ for sub=subjects
      end
     if sub==60 && SOA==2 %SOA2
         ce(:,[3])=[]; %column 3 (list 14)
+    end 
+    if sub== 64 && SOA==2
+        ce(:,[4])=[]; %column 4 (list 35)
+    end 
+    if sub==68 && SOA==3 %column 4 (list 32)
+        ce(:,[4])=[];
+    end 
+    if sub==65 && SOA==2 %column 3 (list 18)
+       ce(:,[3])=[];
     end 
     if sub==65 && SOA==3
         ce(:,[3])=[]; %column 3 (list 24)
@@ -215,7 +233,7 @@ normalized_recall=array2table(normalized_recall, 'VariableNames',{'Subject','E-2
      'E', 'E+1', 'P-2', 'P-1', 'P', 'P+1'});
 cd         '/Users/albaperis/Desktop/Alba/PhD UPM /Von Restroff WP3/Paper_github/Odd_SOA_CRP/Raw_Results'
 
-%writetable(normalized_recall,sprintf('SOA%d_v1normalized_final_recall_AP_Jan21.csv',SOA));
+writetable(normalized_recall,sprintf('SOA%d_v1normalized_final_recall_AP_Jan21.csv',SOA));
 
 %For R, manually change the SOA!!
 recall=table2cell(normalized_recall);
@@ -232,7 +250,7 @@ normrec=[Em2;Em1;E;Ep1;Pm2;Pm1;P;Pp1];
 normrec=cell2table(normrec,'VariableNames',{'subject', 'oddballtype', 'wordposition', 'SOA', 'normrec'});
 cd     '/Users/albaperis/Desktop/Alba/PhD UPM /Von Restroff WP3/Paper_github/Odd_SOA_CRP/Raw_Results'
 
-writetable (normrec, sprintf('normrec_SOA6_R.csv',SOA));
+writetable (normrec, sprintf('normrec_SOA%d_R.csv',SOA));
 
 %% Uncomment this to get data for R
 clearvars

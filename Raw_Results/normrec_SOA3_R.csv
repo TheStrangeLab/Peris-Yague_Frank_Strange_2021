@@ -61,7 +61,7 @@ subject,oddballtype,wordposition,SOA,normrec
 65,E,m2,3,-0.333333333333333
 66,E,m2,3,0
 67,E,m2,3,0.25
-68,E,m2,3,-0.5
+68,E,m2,3,-0.666666666666667
 69,E,m2,3,0.25
 70,E,m2,3,0
 71,E,m2,3,0
@@ -131,7 +131,7 @@ subject,oddballtype,wordposition,SOA,normrec
 65,E,m1,3,-0.333333333333333
 66,E,m1,3,0
 67,E,m1,3,-0.25
-68,E,m1,3,-0.5
+68,E,m1,3,-0.666666666666667
 69,E,m1,3,-0.25
 70,E,m1,3,0
 71,E,m1,3,0.5
@@ -201,7 +201,7 @@ subject,oddballtype,wordposition,SOA,normrec
 65,E,odd,3,-0.333333333333333
 66,E,odd,3,0.25
 67,E,odd,3,0
-68,E,odd,3,-0.25
+68,E,odd,3,-0.333333333333333
 69,E,odd,3,0.25
 70,E,odd,3,0
 71,E,odd,3,0.75
@@ -271,7 +271,7 @@ subject,oddballtype,wordposition,SOA,normrec
 65,E,p1,3,-0.666666666666667
 66,E,p1,3,0.25
 67,E,p1,3,-0.25
-68,E,p1,3,-0.75
+68,E,p1,3,-0.666666666666667
 69,E,p1,3,0.25
 70,E,p1,3,0
 71,E,p1,3,0.25
