@@ -1,4 +1,4 @@
-# Odd_SOA_CRP
+# Peris-Yague_Frank_Strange_2021
 Code to analyze the SOA dataset.
 
 To preprocess the raw data and re-organize the data run:
