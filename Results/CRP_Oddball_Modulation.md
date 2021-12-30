@@ -211,53 +211,53 @@ Peris-Yague et al. 2021
     ## ANOVA Table (type III tests)
     ## 
     ##                     Effect DFn DFd      F        p p<.05   ges
-    ## 1              oddballtype   1  69  3.440 6.80e-02       0.014
-    ## 2             wordposition   3 207 55.195 2.95e-26     * 0.129
-    ## 3 oddballtype:wordposition   3 207  3.614 1.40e-02     * 0.010
+    ## 1              oddballtype   1  69  3.477 6.60e-02       0.014
+    ## 2             wordposition   3 207 55.100 3.19e-26     * 0.129
+    ## 3 oddballtype:wordposition   3 207  3.604 1.40e-02     * 0.010
 
     ## # A tibble: 6 × 10
     ##   .y.   group1 group2    n1    n2 statistic    df        p    p.adj p.adj.signif
     ## * <chr> <chr>  <chr>  <int> <int>     <dbl> <dbl>    <dbl>    <dbl> <chr>       
-    ## 1 x     m1     m2        70    70    -1.17     69 2.47e- 1 3.02e- 1 ns          
-    ## 2 x     m1     odd       70    70   -10.3      69 1.56e-15 4.68e-15 ****        
-    ## 3 x     m1     p1        70    70     0.117    69 9.07e- 1 9.07e- 1 ns          
-    ## 4 x     m2     odd       70    70    -9.61     69 2.35e-14 4.7 e-14 ****        
-    ## 5 x     m2     p1        70    70     1.15     69 2.52e- 1 3.02e- 1 ns          
-    ## 6 x     odd    p1        70    70    11.3      69 2.67e-17 1.6 e-16 ****
+    ## 1 x     m1     m2        70    70   -1.17      69 2.47e- 1 3.13e- 1 ns          
+    ## 2 x     m1     odd       70    70  -10.3       69 1.56e-15 4.68e-15 ****        
+    ## 3 x     m1     p1        70    70    0.0908    69 9.28e- 1 9.28e- 1 ns          
+    ## 4 x     m2     odd       70    70   -9.61      69 2.35e-14 4.7 e-14 ****        
+    ## 5 x     m2     p1        70    70    1.13      69 2.61e- 1 3.13e- 1 ns          
+    ## 6 x     odd    p1        70    70   11.2       69 3.64e-17 2.18e-16 ****
 
     ## # A tibble: 6 × 7
     ##   .y.   group1 group2 effsize    n1    n2 magnitude 
     ## * <chr> <chr>  <chr>    <dbl> <int> <int> <ord>     
     ## 1 x     m1     m2     -0.139     70    70 negligible
     ## 2 x     m1     odd    -1.23      70    70 large     
-    ## 3 x     m1     p1      0.0140    70    70 negligible
+    ## 3 x     m1     p1      0.0109    70    70 negligible
     ## 4 x     m2     odd    -1.15      70    70 large     
-    ## 5 x     m2     p1      0.138     70    70 negligible
-    ## 6 x     odd    p1      1.35      70    70 large
+    ## 5 x     m2     p1      0.135     70    70 negligible
+    ## 6 x     odd    p1      1.34      70    70 large
 
     ## # A tibble: 4 × 11
-    ##   wordposition .y.     group1 group2    n1    n2 statistic    df      p  p.adj
-    ## * <fct>        <chr>   <chr>  <chr>  <int> <int>     <dbl> <dbl>  <dbl>  <dbl>
-    ## 1 m1           normrec E      P         70    70     0.782    69 0.437  0.437 
-    ## 2 m2           normrec E      P         70    70     0.526    69 0.601  0.601 
-    ## 3 odd          normrec E      P         70    70     3.93     69 0.0002 0.0002
-    ## 4 p1           normrec E      P         70    70     0.851    69 0.398  0.398 
+    ##   wordposition .y.     group1 group2    n1    n2 statistic    df       p   p.adj
+    ## * <fct>        <chr>   <chr>  <chr>  <int> <int>     <dbl> <dbl>   <dbl>   <dbl>
+    ## 1 m1           normrec E      P         70    70     0.783    69 4.36e-1 4.36e-1
+    ## 2 m2           normrec E      P         70    70     0.527    69 6   e-1 6   e-1
+    ## 3 odd          normrec E      P         70    70     3.93     69 1.99e-4 1.99e-4
+    ## 4 p1           normrec E      P         70    70     0.878    69 3.83e-1 3.83e-1
     ## # … with 1 more variable: p.adj.signif <chr>
 
     ## # A tibble: 4 × 8
     ##   .y.     group1 group2 effsize wordposition    n1    n2 magnitude 
     ## * <chr>   <chr>  <chr>    <dbl> <fct>        <int> <int> <ord>     
-    ## 1 normrec E      P       0.0934 m1              70    70 negligible
-    ## 2 normrec E      P       0.0629 m2              70    70 negligible
+    ## 1 normrec E      P       0.0936 m1              70    70 negligible
+    ## 2 normrec E      P       0.0630 m2              70    70 negligible
     ## 3 normrec E      P       0.470  odd             70    70 small     
-    ## 4 normrec E      P       0.102  p1              70    70 negligible
+    ## 4 normrec E      P       0.105  p1              70    70 negligible
 
 ![](CRP_Oddball_Modulation_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
 
     ## # A tibble: 1 × 10
     ##   .y.    group1 group2    n1    n2 statistic    df     p p.adj p.adj.signif
     ## * <chr>  <chr>  <chr>  <int> <int>     <dbl> <dbl> <dbl> <dbl> <chr>       
-    ## 1 recall em1    ce        70    70     -1.07    69 0.288 0.288 ns
+    ## 1 recall em1    ce        70    70     -1.07    69  0.29  0.29 ns
 
     ## # A tibble: 1 × 7
     ##   .y.    group1 group2 effsize    n1    n2 magnitude 

@@ -763,7 +763,7 @@ corrplot<-as.data.frame(cbind(em1_corr$normrec,lag_corr$CRP))
 corrplt<-ggplot(corrplot, aes(x=V1, y=V2))+
   geom_point(shape=18, color='darksalmon')+
   geom_smooth(method=lm, se=FALSE, color='lightskyblue2')+
-  ggtitle('Correlation of E-1 normalized recall and transitions from E Odd (lag +1)')+
+  #ggtitle('Correlation of E-1 normalized recall and transitions from E Odd (lag +1)')+
   ylab('Lag +1 transitions from E Odd')+
   xlab('E-1 Normalized Recall')+
   theme_classic()

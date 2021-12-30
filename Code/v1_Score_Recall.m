@@ -71,7 +71,9 @@ for sub=subjects
        e(:,[16])=[]; %column 16 (list 32)
    end  
     if sub==65
-        e(:,[13])=[]; %column 13 (list 24)
+        e(:,[9])=[]; %column 9 (list 18) 
+        %e(:,[13])=[]; %column 13 (list 24)- 329
+        e(:,[12])=[]; %column 12 (list 24) because I deleted a previous list this shifted -1
     end 
     if sub==43
         e(:,[12])=[]; %column 12 (list 36)
@@ -139,7 +141,9 @@ for sub=subjects
        ce(:,[16])=[]; %column 16 (list 32)
    end 
     if sub==65
-        ce(:,[13])=[]; %column 13 (list 24)
+        ce(:,[9])=[]; %column 9 (list 18) 
+        %ce(:,[13])=[]; %column 13 (list 24)- 329
+        ce(:,[12])=[]; %column 12 (list 24) because I deleted a previous list this shifted -1
     end 
     if sub==43
         ce(:,[12])=[]; %column 12 (list 36)
