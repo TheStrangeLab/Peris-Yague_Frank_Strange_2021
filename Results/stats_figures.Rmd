@@ -334,35 +334,6 @@ SOA.pwc
 CRP.SOA.data %>%
   cohens_d(x~SOA, paired=TRUE)
 
-
-#Run a Friedman test on JASP 
-#CRPSOA.grouped<-CRPSOA %>%
- # group_by(subject, SOA, direction, wordposition) %>%
-  #get_summary_stats(CRP,type='mean_se')
-
-#CRPSOA.grouped<-CRPSOA.grouped[,c('subject','SOA','direction','wordposition','mean')]
-#CRPSOA.grouped<-as.data.frame(CRPSOA.grouped)
-
-#CRP.SOA.QQ<-ggqqplot(CRPSOA.grouped,'mean',ggtheme=theme_bw())+
- # facet_grid(direction+wordposition~SOA, labeller='label_both') 
-
-#names(CRPSOA.grouped)[5] <- "CRP"
-
-#CRPall.SOA.aov<-anova_test(
-#  data=CRPSOA.grouped,dv=CRP,wid=subject,
-#  within=c(SOA,wordposition,direction)
-#)
-#CRPall.SOA.aov
-#get_anova_table(CRPall.SOA.aov)
-
-#Follow-up the 3 Way interaction 
-#SOAxWpxDir<-CRPSOA.grouped %>%
-#  group_by(SOA) %>%
-#  anova_test(dv=CRP, wid=subject, within = c(wordposition,direction))
-
-#path_out<-'/Users/albaperis/Desktop/Alba/PhD UPM /Von Restroff WP3/Paper_github/Odd_SOA_CRP/Raw_Results/'
-#write.csv(CRPSOA.grouped,paste(path_out,'Fig2B_jasp.csv',sep = ''))
-
   
 ```
 

@@ -17,4 +17,4 @@ The following scripts allow you to obtain the results. The raw results will be .
 - CRP_lag_analyses.m (to obtain the overall CRP i.e including all trials, to compare remembered v. forgotten oddball trials and to obtain the CRPs in transitions to and from the oddballs)
 
 Once the above scripts have all been run, to obtain the statistical results and the figures run the following R markdown in the 'Results' folder.
-- CRP_Oddball_Modulation.Rmd
+- stats_figures.Rmd
