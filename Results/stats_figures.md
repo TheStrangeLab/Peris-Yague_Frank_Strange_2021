@@ -3,13 +3,35 @@ Emotional salience modulates the forward flow of memory
 Peris-Yague et al. 2021
 8/17/2021
 
+  - [Fig. 1C Relative Recall Position by
+    SOA](#fig-1c-relative-recall-position-by-soa)
+  - [Fig. 1D Amount of items recalled per
+    SOA](#fig-1d-amount-of-items-recalled-per-soa)
+  - [Fig. 2A Conditional Response Probability
+    Curves](#fig-2a-conditional-response-probability-curves)
+  - [Fig. 2B Conditional Response Probability Curves by Stimulus Onset
+    Asynchrony](#fig-2b-conditional-response-probability-curves-by-stimulus-onset-asynchrony)
+  - [Fig. 3C Conditional Response Probability Curves transitions
+    ***to*** and ***from***
+    oddballs](#fig-3c-conditional-response-probability-curves-transitions-to-and-from-oddballs)
+  - [Fig. 4 Condutional Response Probability Curves by SOA transitions
+    ***to*** and ***from***
+    oddballs](#fig-4-condutional-response-probability-curves-by-soa-transitions-to-and-from-oddballs)
+  - [***Supplementary Material
+    Analyses***](#supplementary-material-analyses)
+  - [Fig. S1 Conditional Response Probability Curves in remembered
+    vs. forgotten
+    oddballs](#fig-s1-conditional-response-probability-curves-in-remembered-vs-forgotten-oddballs)
+  - [Fig. S2 Normalized Recall](#fig-s2-normalized-recall)
+  - [Fig. S3 E-1, lag+1 correlation](#fig-s3-e-1-lag1-correlation)
+
 # Fig. 1C Relative Recall Position by SOA
 
-![](CRP_Oddball_Modulation_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
+![](stats_figures_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
 
 # Fig. 1D Amount of items recalled per SOA
 
-![](CRP_Oddball_Modulation_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
+![](stats_figures_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
 
     ## ANOVA Table (type III tests)
     ## 
@@ -18,7 +40,7 @@ Peris-Yague et al. 2021
 
 # Fig. 2A Conditional Response Probability Curves
 
-![](CRP_Oddball_Modulation_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
+![](stats_figures_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
 
     ## ANOVA Table (type III tests)
     ## 
@@ -109,7 +131,7 @@ Peris-Yague et al. 2021
 
 # Fig. 2B Conditional Response Probability Curves by Stimulus Onset Asynchrony
 
-![](CRP_Oddball_Modulation_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+![](stats_figures_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
 
     ## ANOVA Table (type III tests)
     ## 
@@ -147,7 +169,7 @@ Peris-Yague et al. 2021
 
 # Fig. 3C Conditional Response Probability Curves transitions ***to*** and ***from*** oddballs
 
-![](CRP_Oddball_Modulation_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
+![](stats_figures_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
 
     ## ANOVA Table (type III tests)
     ## 
@@ -188,7 +210,7 @@ Peris-Yague et al. 2021
 
 # Fig. 4 Condutional Response Probability Curves by SOA transitions ***to*** and ***from*** oddballs
 
-![](CRP_Oddball_Modulation_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
+![](stats_figures_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
 
     ## # A tibble: 1 × 7
     ##   .y.   group1 group2    n1    n2 statistic         p
@@ -204,7 +226,7 @@ Peris-Yague et al. 2021
 
 # Fig. S1 Conditional Response Probability Curves in remembered vs. forgotten oddballs
 
-![](CRP_Oddball_Modulation_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
+![](stats_figures_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
 
 # Fig. S2 Normalized Recall
 
@@ -252,7 +274,7 @@ Peris-Yague et al. 2021
     ## 3 normrec E      P       0.470  odd             70    70 small     
     ## 4 normrec E      P       0.105  p1              70    70 negligible
 
-![](CRP_Oddball_Modulation_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
+![](stats_figures_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
 
     ## # A tibble: 1 × 10
     ##   .y.    group1 group2    n1    n2 statistic    df     p p.adj p.adj.signif
@@ -266,7 +288,7 @@ Peris-Yague et al. 2021
 
 # Fig. S3 E-1, lag+1 correlation
 
-![](CRP_Oddball_Modulation_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
+![](stats_figures_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
 
     ## 
     ##  Spearman's rank correlation rho

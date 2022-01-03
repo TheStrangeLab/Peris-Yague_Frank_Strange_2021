@@ -4,6 +4,7 @@ author: "Peris-Yague et al. 2021"
 date: "8/17/2021"
 output: 
   github_document:
+    toc: true
   html_document:
     df_print: paged
   pdf_document: default
