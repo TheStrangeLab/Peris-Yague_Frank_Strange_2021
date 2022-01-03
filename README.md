@@ -19,4 +19,4 @@ The following scripts allow you to obtain the results. The raw results will be .
 Once the above scripts have all been run, to obtain the statistical results and the figures run the following R markdown in the 'Results' folder.
 - stats_figures.Rmd
 
-![alt text] https://github.com/TheStrangeLab/Peris-Yague_Frank_Strange_2021/blob/main/Results/stats_figures.md
+![alt text] (https://github.com/TheStrangeLab/Peris-Yague_Frank_Strange_2021/blob/main/Results/stats_figures.md)
