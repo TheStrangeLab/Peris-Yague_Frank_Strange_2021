@@ -11,8 +11,8 @@
 
 %% Run the analysis for transitions to and from emotional oddballs 
 clearvars 
-dir= '/Users/albaperis/Desktop/Alba/PhD UPM /Von Restroff WP3/Paper_github/Odd_SOA_CRP/Code';
-dir_func='/Users/albaperis/Desktop/Alba/PhD UPM /Von Restroff WP3/September2020/v1'; %Functions are here 
+dir= '/Code';
+dir_func= % Add here the path to the functions from http://memory.psych.upenn.edu/Behavioral_toolbox
 cd(dir)
 
 load emotional_v1_CRP
@@ -149,8 +149,8 @@ writetable(E_lag_collapsed_R, 'E_lag_collapsed_R.csv');
 
 clearvars -except E_ToFrom_R 
 
-dir= '/Users/albaperis/Desktop/Alba/PhD UPM /Von Restroff WP3/Paper_github/Odd_SOA_CRP/Code';
-dir_func='/Users/albaperis/Desktop/Alba/PhD UPM /Von Restroff WP3/September2020/v1';
+dir= '/Code';
+dir_func= % Add here the path to the functions from http://memory.psych.upenn.edu/Behavioral_toolbox
 cd(dir)
 
 load perceptual_v1_CRP
@@ -273,6 +273,6 @@ P_ToFrom_R=[P_before; P_after];
 %% Concatenate the R outputs
 ToFrom_CRP_SOA_R=array2table([E_ToFrom_R; P_ToFrom_R], 'VariableNames',{'subject', 'SOA','oddballtype', 'transition', 'direction', 'wordposition', 'CRP'});
 
-cd     '/Users/albaperis/Desktop/Alba/PhD UPM /Von Restroff WP3/Paper_github/Odd_SOA_CRP/Raw_Results';
+cd '/Raw_Results';
 
 %writetable(ToFrom_CRP_SOA_R, 'ToFrom_CRP_SOA_R.csv');

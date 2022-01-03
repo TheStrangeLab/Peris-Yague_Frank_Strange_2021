@@ -13,7 +13,7 @@
 
 %% GET INDIVIDUAL LISTS FOR V1 (LISTS WITH ODDBALLS)
 clearvars
-cd     '/Users/albaperis/Desktop/Alba/PhD UPM /Von Restroff WP3/Paper_github/Odd_SOA_CRP/Raw_data'; %this is the directory with the raw data
+cd     '/Raw_data'; %this is the directory with the raw data
 subjects = [4:7 9:12 14:75]; %subjects 3,8,13 are left-handed--> excluded
 
 index=0;
@@ -150,7 +150,7 @@ clearvars
 subjects = [4:7 9:12 14:75];
 index=0;
 
-cd '/Users/albaperis/Desktop/Alba/PhD UPM /Von Restroff WP3/Paper_github/Odd_SOA_CRP/Raw_data'
+cd '/Raw_data'
 
 
 for sub=subjects
@@ -284,7 +284,7 @@ p=data(1392:2783,1:19);
 p=sortrows(p,{'position_od'},{'ascend'});
 perceptual_v1_CRP=table2array(p);
 
-cd '/Users/albaperis/Desktop/Alba/PhD UPM /Von Restroff WP3/Paper_github/Odd_SOA_CRP/Code';
+cd '/Code';
 
 save emotional_v1_CRP emotional_v1_CRP
 save perceptual_v1_CRP perceptual_v1_CRP

@@ -10,10 +10,9 @@
 %Lab which are avaibalable here: http://memory.psych.upenn.edu/Behavioral_toolbox
 
 clearvars
-dir= '/Users/albaperis/Desktop/Alba/PhD UPM /Von Restroff WP3/Paper_github/Odd_SOA_CRP/Code';
+dir= '/Code';
 cd(dir)
-dir_func='/Users/albaperis/Desktop/Alba/PhD UPM /Von Restroff WP3/September2020/v1'; %directory where the functions from
-%the computational memory lab are.
+dir_func= %Add here the path to the functions from http://memory.psych.upenn.edu/Behavioral_toolbox
 
 load emotional_v1_CRP
 
@@ -114,8 +113,8 @@ rvf_CRP_E_R=[forg_E; rem_E];
 
 %% Run the analysis for transitions to and from emotional oddballs 
 clearvars -except all_CRP_E_R rvf_CRP_E_R s
-dir= '/Users/albaperis/Desktop/Alba/PhD UPM /Von Restroff WP3/Paper_github/Odd_SOA_CRP/Code';
-dir_func='/Users/albaperis/Desktop/Alba/PhD UPM /Von Restroff WP3/September2020/v1'; %Functions are here 
+dir= '/Code';
+dir_func= %Add here the path to the functions from http://memory.psych.upenn.edu/Behavioral_toolbox
 cd(dir)
 
 load emotional_v1_CRP
@@ -242,8 +241,8 @@ E_ToFrom_R=[E_before; E_after];
 
 clearvars -except E_ToFrom_R s rvf_CRP_E_R all_CRP_E_R E_lag_collapsed_R
 
-dir= '/Users/albaperis/Desktop/Alba/PhD UPM /Von Restroff WP3/Paper_github/Odd_SOA_CRP/Code';
-dir_func='/Users/albaperis/Desktop/Alba/PhD UPM /Von Restroff WP3/September2020/v1'; %functions are here
+dir= '/Code';
+dir_func= %Add here the path to the functions from http://memory.psych.upenn.edu/Behavioral_toolbox
 cd(dir)
 
 load perceptual_v1_CRP
@@ -348,8 +347,8 @@ rvf_CRP_P_R=[forg_P; rem_P];
 
 clearvars -except E_ToFrom_R s rvf_CRP_E_R all_CRP_E_R rvf_CRP_P_R all_CRP_P_R E_lag_collapsed_R
 
-dir= '/Users/albaperis/Desktop/Alba/PhD UPM /Von Restroff WP3/Paper_github/Odd_SOA_CRP/Code';
-dir_func='/Users/albaperis/Desktop/Alba/PhD UPM /Von Restroff WP3/September2020/v1';
+dir= '/Code';
+dir_func= %Add here the path to the functions from http://memory.psych.upenn.edu/Behavioral_toolbox
 cd(dir)
 
 load perceptual_v1_CRP
@@ -479,7 +478,7 @@ CRP_all_R=array2table([all_CRP_E_R; all_CRP_P_R], 'VariableNames',{'subject', 'o
 rvf_CRP_R=array2table([rvf_CRP_E_R; rvf_CRP_P_R], 'VariableNames',{'subject', 'oddballtype', 'recall', 'direction', 'wordposition', 'CRP'});
 ToFrom_CRP_R=array2table([E_ToFrom_R; P_ToFrom_R], 'VariableNames',{'subject', 'oddballtype', 'transition', 'direction', 'wordposition', 'CRP'});
 
-cd     '/Users/albaperis/Desktop/Alba/PhD UPM /Von Restroff WP3/Paper_github/Odd_SOA_CRP/Raw_Results';
+cd '/Raw_Results';
 %writetable (CRP_all_R, 'CRP_all_R.csv');
 %writetable(rvf_CRP_R, 'rvf_CRP_R.csv');
 %writetable(ToFrom_CRP_R, 'ToFrom_CRP_R.csv');

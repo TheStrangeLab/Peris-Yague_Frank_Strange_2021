@@ -2,7 +2,7 @@
 %December 29th 2021
 
 clearvars
-dir= '/Users/albaperis/Desktop/Alba/PhD UPM /Von Restroff WP3/Paper_github/Odd_SOA_CRP/Code';
+dir= '/Code';
 cd(dir)
 load alldata
 % column 15= subject
@@ -81,7 +81,7 @@ P_R=[repmat({'Perceptual'},832,1) P_R];
 RR=[E_R; P_R];
 RR=array2table(RR, 'VariableNames',{'oddballtype', 'relativerecall', 'SOA', 'subject'});
 
-cd '/Users/albaperis/Desktop/Alba/PhD UPM /Von Restroff WP3/Paper_github/Odd_SOA_CRP/Raw_Results'
+cd '/Raw_Results'
 %writetable(RR, 'RR.csv')
 
 %%Average to have 1 relative recall value per subject, per SOA, per emotion

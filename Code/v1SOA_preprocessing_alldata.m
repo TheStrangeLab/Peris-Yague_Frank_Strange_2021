@@ -12,7 +12,7 @@ clearvars
 subjects = [4:7 9:12 14:75];
 index=0;
 
-cd '/Users/albaperis/Desktop/Alba/PhD UPM /Von Restroff WP3/Paper_github/Odd_SOA_CRP/Raw_data'
+cd '/Raw_data'
 
 for sub=subjects
     index=index+1;
@@ -91,7 +91,7 @@ alldata(:,1:21)=cellfun(@num2str, data(:,1:21), 'UniformOutput', false);
 %data=array2table(data,'VariableNames',{'1', '2', '3', '4', '5', '6', '7', '8','9',...
     %'10', '11', '12', '13', '14', 'subject', 'list', 'typeOD','SOA', 'position_od','position_control','hitslist'});
 
-cd '/Users/albaperis/Desktop/Alba/PhD UPM /Von Restroff WP3/Paper_github/Odd_SOA_CRP/Code'
+cd '/Code'
 
 save alldata alldata
 

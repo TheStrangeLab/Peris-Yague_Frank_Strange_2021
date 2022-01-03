@@ -35,7 +35,7 @@ library(emmeans)
 
 
 ```{r echo=FALSE, warning=FALSE, message=FALSE} 
-setwd("/Users/albaperis/Desktop/Alba/PhD UPM /Von Restroff WP3/Paper_github/Odd_SOA_CRP/Raw_Results")
+setwd("/Raw_Results")
 RR<-read.csv('RR.csv')
 RR<-as.data.frame(RR)
 #head(RR) #to show you what my raw data looks like 
@@ -109,7 +109,7 @@ RR.aov<-anova_test(
 # Fig. 1D Amount of items recalled per SOA
 
 ```{r echo=FALSE,warning=FALSE, message=FALSE}
-setwd("/Users/albaperis/Desktop/Alba/PhD UPM /Von Restroff WP3/Paper_github/Odd_SOA_CRP/Raw_Results")
+setwd("/Raw_Results")
 
 listrecallSOA<-read.csv('list_recall_SOA_R.csv')
 listrecallSOA<-as.data.frame(listrecallSOA)
@@ -167,7 +167,7 @@ names(listrecallSOA.wide)[5] <- "SOA 1"
 names(listrecallSOA.wide)[6] <- "SOA 4"
 
 
-path_out<-'/Users/albaperis/Desktop/Alba/PhD UPM /Von Restroff WP3/Paper_github/Odd_SOA_CRP/Raw_Results/'
+path_out<-'/Raw_Results/'
 write.csv(listrecallSOA.wide,paste(path_out,'Fig1D_prism.csv',sep = ''))
 
 ```
@@ -177,7 +177,7 @@ write.csv(listrecallSOA.wide,paste(path_out,'Fig1D_prism.csv',sep = ''))
 
 
 ```{r echo=FALSE,warning=FALSE, message=FALSE}
-setwd("/Users/albaperis/Desktop/Alba/PhD UPM /Von Restroff WP3/Paper_github/Odd_SOA_CRP/Raw_Results")
+setwd("/Raw_Results")
 CRPall<-read.csv('CRP_all_R.csv')
 CRPall<-as.data.frame(CRPall)
 
@@ -269,7 +269,7 @@ WpxDir.data %>%
 # Fig. 2B Conditional Response Probability Curves by Stimulus Onset Asynchrony
 
 ```{r echo=FALSE, warning=FALSE, message=FALSE}
-setwd("/Users/albaperis/Desktop/Alba/PhD UPM /Von Restroff WP3/Paper_github/Odd_SOA_CRP/Raw_Results")
+setwd("/Raw_Results")
 CRPSOA<-read.csv('all_CRP_SOA_R.csv')
 CRPSOA<-as.data.frame(CRPSOA)
 
@@ -342,7 +342,7 @@ CRP.SOA.data %>%
 # Fig. 3C Conditional Response Probability Curves transitions ***to*** and ***from*** oddballs
 
 ```{r echo=FALSE, warning=FALSE, message=FALSE}
-setwd("/Users/albaperis/Desktop/Alba/PhD UPM /Von Restroff WP3/Paper_github/Odd_SOA_CRP/Raw_Results")
+setwd("/Raw_Results")
 TFCRP<-read.csv('ToFrom_CRP_R.csv')
 TFCRP<-as.data.frame(TFCRP)
 #head(TFCRP) #to show you what my raw data looks like 
@@ -393,7 +393,7 @@ TFCRP$direction<-factor(TFCRP$direction)
 TFCRP$wordposition<-factor(TFCRP$wordposition)
 
 #Collapsing accross lags 'omitnan'
-setwd("/Users/albaperis/Desktop/Alba/PhD UPM /Von Restroff WP3/Paper_github/Odd_SOA_CRP/Raw_Results")
+setwd("/Raw_Results")
 TFCRP_collapsed<-read.csv('collapsed_CRP_omitnan.csv')
 TFCRP_collapsed<-as.data.frame(TFCRP_collapsed)
 
@@ -468,7 +468,7 @@ pltTF.collapsed<-ggplot(TFCRP_collapsed,aes(x=direction,y=CRPmean), group=oddbal
 
 
 ```{r echo=FALSE, warning=FALSE, message=FALSE}
-setwd("/Users/albaperis/Desktop/Alba/PhD UPM /Von Restroff WP3/Paper_github/Odd_SOA_CRP/Raw_Results")
+setwd("/Raw_Results")
 data_collapsed<-read.csv('E_lag_collapsed_R.csv')
 data_collapsed<-as.data.frame(data_collapsed)
 
@@ -531,7 +531,7 @@ TovFrom.wilcox.effsize
 #  group_by(transition) %>%
 #  get_summary_stats(CRPmean,type='mean_ci')
 
-path_out<-'/Users/albaperis/Desktop/Alba/PhD UPM /Von Restroff WP3/Paper_github/Odd_SOA_CRP/Raw_Results/'
+path_out<-'/Raw_Results/'
 write.csv(TovFrom.CRP.SOA,paste(path_out,'Fig4_intext_prism.csv',sep = ''))
 
 
@@ -559,7 +559,7 @@ names(F.from.SOA.wide)[5] <- "4"
 names(F.from.SOA.wide)[6] <- "6"
 
 #save data to run the Friedman test on Prism 
-path_out<-'/Users/albaperis/Desktop/Alba/PhD UPM /Von Restroff WP3/Paper_github/Odd_SOA_CRP/Raw_Results/'
+path_out<-'/Raw_Results/'
 write.csv(F.from.SOA.wide,paste(path_out,'Fig4_Forward_from_SOA_jasp.csv',sep = ''))
 
 
@@ -575,7 +575,7 @@ write.csv(F.from.SOA.wide,paste(path_out,'Fig4_Forward_from_SOA_jasp.csv',sep = 
 # Fig. S1 Conditional Response Probability Curves in remembered vs. forgotten oddballs 
 
 ```{r echo=FALSE,warning=FALSE, message=FALSE}
-setwd("/Users/albaperis/Desktop/Alba/PhD UPM /Von Restroff WP3/Paper_github/Odd_SOA_CRP/Raw_Results")
+setwd("/Raw_Results")
 RvF<-read.csv('rvf_CRP_R.csv')
 RvF<-as.data.frame(RvF)
 #head(RvF) #to show you what my raw data looks like 
@@ -614,7 +614,7 @@ pltRVF
 # Fig. S2 Normalized Recall 
 
 ```{r echo=FALSE,warning=FALSE, message=FALSE}
-setwd("/Users/albaperis/Desktop/Alba/PhD UPM /Von Restroff WP3/Paper_github/Odd_SOA_CRP/Raw_Results")
+setwd("/Raw_Results")
 recall<-read.csv('normrec_R.csv')
 recall<-as.data.frame(recall)
 
@@ -693,7 +693,7 @@ recall.fig+
 
 
 #Check whether e and p oddballs were better recalled than control words. 
-setwd("/Users/albaperis/Desktop/Alba/PhD UPM /Von Restroff WP3/Paper_github/Odd_SOA_CRP/Raw_Results")
+setwd("/Raw_Results")
 oddVcont<-read.csv('v1final_recall_AP.csv')
 oddVcont<-as.data.frame(oddVcont)
 

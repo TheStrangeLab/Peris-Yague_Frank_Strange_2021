@@ -1,7 +1,7 @@
 %Alba Peris-Yague
 % Calculate how many items are recalled per list per SOA 
 clearvars
-cd '/Users/albaperis/Desktop/Alba/PhD UPM /Von Restroff WP3/Paper_github/Odd_SOA_CRP/Code'
+cd '/Code'
 
 load alldata.mat
 
@@ -21,6 +21,6 @@ end
 totalrec=[totalrec str2double(data(:,15:16))];
 totalrec=array2table(totalrec,'VariableNames',{'total_recall_list', 'SOA', 'subject'});
 
-cd '/Users/albaperis/Desktop/Alba/PhD UPM /Von Restroff WP3/Paper_github/Odd_SOA_CRP/Raw_Results'
+cd '/Raw_Results'
 
 writetable (totalrec,'list_recall_SOA_R.csv');
