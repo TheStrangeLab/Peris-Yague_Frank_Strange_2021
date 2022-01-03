@@ -59,11 +59,11 @@ folder.
 
 # Fig. 1C Relative Recall Position by SOA
 
-![](README_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
+![](stats_figures_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
 
 # Fig. 1D Amount of items recalled per SOA
 
-![](README_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
+![](stats_figures_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
 
     ## ANOVA Table (type III tests)
     ## 
@@ -72,7 +72,7 @@ folder.
 
 # Fig. 2A Conditional Response Probability Curves
 
-![](README_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
+![](stats_figures_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
 
     ## ANOVA Table (type III tests)
     ## 
@@ -163,7 +163,7 @@ folder.
 
 # Fig. 2B Conditional Response Probability Curves by Stimulus Onset Asynchrony
 
-![](README_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+![](stats_figures_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
 
     ## ANOVA Table (type III tests)
     ## 
@@ -201,7 +201,7 @@ folder.
 
 # Fig. 3C Conditional Response Probability Curves transitions ***to*** and ***from*** oddballs
 
-![](README_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
+![](stats_figures_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
 
     ## ANOVA Table (type III tests)
     ## 
@@ -242,7 +242,7 @@ folder.
 
 # Fig. 4 Condutional Response Probability Curves by SOA transitions ***to*** and ***from*** oddballs
 
-![](README_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
+![](stats_figures_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
 
     ## # A tibble: 1 × 7
     ##   .y.   group1 group2    n1    n2 statistic         p
@@ -258,7 +258,7 @@ folder.
 
 # Fig. S1 Conditional Response Probability Curves in remembered vs. forgotten oddballs
 
-![](README_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
+![](stats_figures_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
 
 # Fig. S2 Normalized Recall
 
@@ -306,7 +306,7 @@ folder.
     ## 3 normrec E      P       0.470  odd             70    70 small     
     ## 4 normrec E      P       0.105  p1              70    70 negligible
 
-![](README_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
+![](stats_figures_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
 
     ## # A tibble: 1 × 10
     ##   .y.    group1 group2    n1    n2 statistic    df     p p.adj p.adj.signif
@@ -320,7 +320,7 @@ folder.
 
 # Fig. S3 E-1, lag+1 correlation
 
-![](README_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
+![](stats_figures_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
 
     ## 
     ##  Spearman's rank correlation rho
