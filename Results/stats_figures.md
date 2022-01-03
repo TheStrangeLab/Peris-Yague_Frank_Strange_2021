@@ -25,38 +25,6 @@ Peris-Yague et al. 2021
   - [Fig. S2 Normalized Recall](#fig-s2-normalized-recall)
   - [Fig. S3 E-1, lag+1 correlation](#fig-s3-e-1-lag1-correlation)
 
-To preprocess the raw data and re-organize the data run:
-
-  - v1SOA\_preprocessing\_alldata
-  - v1SOA\_preprocessing\_CRP
-
-This will create output matrices that will be saved in the code folder
-and later called for the analyses.
-
-You must also download this toolbox:
-<http://memory.psych.upenn.edu/Behavioral_toolbox> Some of the analyses
-use functions from the toolbox, for which, the path in Matlab must be
-changed.
-
-The following scripts allow you to obtain the results. The raw results
-will be .csv files which are saved in Raw\_Results and will later be
-used in an R notebook to run the statistics and obtain the figures.
-
-  - v1RelativeRecall.m
-  - v1\_Score\_Recall.m (overall normalized recall)
-  - v1\_Score\_Recall\_SOA.m (calculates normalized recall by SOA, the
-    SOA number needs to be changed manually at the beginning of the
-    code)
-  - CRP\_lag\_analyses.m (to obtain the overall CRP i.e including all
-    trials, to compare remembered v. forgotten oddball trials and to
-    obtain the CRPs in transitions to and from the oddballs)
-
-Once the above scripts have all been run, to obtain the statistical
-results and the figures run the following R markdown in the ‘Results’
-folder.
-
-  - stats\_figures.Rmd
-
 # Fig. 1C Relative Recall Position by SOA
 
 ![](stats_figures_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
