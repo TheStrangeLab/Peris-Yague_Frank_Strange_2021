@@ -133,17 +133,17 @@ E_after=[m5;m4;m3;m2;m1;p1;p2;p3;p4;p5];
 
 E_ToFrom_R=[E_before; E_after];
 
-%Calculate nanmean (23.6.21)
-% E_to_backwards_mean= [num2cell([cell2mat(lag_crp_subj(:,28)) cell2mat(lag_crp_subj(:,29)) mean(cell2mat(lag_crp_subj(1:350,9:13)),2,'omitnan')]) repmat({'to'},350,1) repmat({'backwards'},350,1)];
-% E_to_forwards_mean = [num2cell([cell2mat(lag_crp_subj(:,28)) cell2mat(lag_crp_subj(:,29)) mean(cell2mat(lag_crp_subj(1:350,15:19)),2,'omitnan')]) repmat({'to'},350,1) repmat({'forwards'},350,1)];
-% 
-% E_from_backwards_mean= [num2cell([cell2mat(lag_crp_after_subj(:,28)) cell2mat(lag_crp_after_subj(:,29)) mean(cell2mat(lag_crp_after_subj(1:350,9:13)),2,'omitnan')]) repmat({'from'},350,1) repmat({'backwards'},350,1)];
-% E_from_forwards_mean= [num2cell([cell2mat(lag_crp_after_subj(:,28)) cell2mat(lag_crp_after_subj(:,29)) mean(cell2mat(lag_crp_after_subj(1:350,15:19)),2,'omitnan')]) repmat({'from'},350,1) repmat({'forwards'},350,1)];
-% 
-% E_lag_collapsed= [E_to_backwards_mean; E_to_forwards_mean; E_from_backwards_mean; E_from_forwards_mean];
-% 
-% E_lag_collapsed_R=array2table(E_lag_collapsed, 'VariableNames',{'subject', 'SOA','CRPmean', 'transition', 'direction'});
-%writetable(E_lag_collapsed_R, 'E_lag_collapsed_R.csv');
+%Calculate nanmean 
+E_to_backwards_mean= [num2cell([cell2mat(lag_crp_subj(:,28)) cell2mat(lag_crp_subj(:,29)) mean(cell2mat(lag_crp_subj(1:350,9:13)),2,'omitnan')]) repmat({'to'},350,1) repmat({'backwards'},350,1)];
+E_to_forwards_mean = [num2cell([cell2mat(lag_crp_subj(:,28)) cell2mat(lag_crp_subj(:,29)) mean(cell2mat(lag_crp_subj(1:350,15:19)),2,'omitnan')]) repmat({'to'},350,1) repmat({'forwards'},350,1)];
+
+E_from_backwards_mean= [num2cell([cell2mat(lag_crp_after_subj(:,28)) cell2mat(lag_crp_after_subj(:,29)) mean(cell2mat(lag_crp_after_subj(1:350,9:13)),2,'omitnan')]) repmat({'from'},350,1) repmat({'backwards'},350,1)];
+E_from_forwards_mean= [num2cell([cell2mat(lag_crp_after_subj(:,28)) cell2mat(lag_crp_after_subj(:,29)) mean(cell2mat(lag_crp_after_subj(1:350,15:19)),2,'omitnan')]) repmat({'from'},350,1) repmat({'forwards'},350,1)];
+
+E_lag_collapsed= [E_to_backwards_mean; E_to_forwards_mean; E_from_backwards_mean; E_from_forwards_mean];
+
+E_lag_collapsed_R=array2table(E_lag_collapsed, 'VariableNames',{'subject', 'SOA','CRPmean', 'transition', 'direction'});
+writetable(E_lag_collapsed_R, 'E_lag_collapsed_R.csv');
 
 %% CRP in transitions to and from Perceptual Oddballs 
 

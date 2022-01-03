@@ -13,7 +13,7 @@ recall=zeros(length(subjects),10);
 
 index=0;
 
-for sub=65;%subjects
+for sub=subjects
     index=index+1;
     sdir=sprintf('sub%d',sub);
 
@@ -220,29 +220,6 @@ normalized_recall=array2table(normalized_recall, 'VariableNames',{'Subject','E-2
 
 cd     '/Users/albaperis/Desktop/Alba/PhD UPM /Von Restroff WP3/Paper_github/Odd_SOA_CRP/Raw_Results'
 writetable(normalized_recall, 'v1normalized_final_recall_AP_Jan2021.csv');
-
-%cd '/Users/albaperis/Desktop/Alba/PhD UPM /Von Restroff WP3/September2020/v1/v1_figures';
-%Plot the final recall in percentage
-% figure, bar(mean(recall))
-% hold
-% errorbar(mean(recall),std(recall)/sqrt(numberofsubjects), 'Linestyle','none','Color','k');
-% title('v1 Memory scores for word position')
-% xlabel('word position')
-% set(gca,'XTick',[1:10])
-% set(gca,'XTickLabel',{'E-2','E-1','E','E+1','P-2','P-1','P','P+1','ConE','ConP'})
-% ylabel('Recall')
-% saveas(gcf, 'v1_Fig1_FinalRecall.png');
-% 
-% %Plot the normalized recall 
-% figure, bar(mean(norm_rec))
-% hold 
-% errorbar(mean(norm_rec), std(norm_rec)/sqrt(numberofsubjects), 'Linestyle','none','Color','k');
-% title('v1 Memory scores for word position normalized (- control)')
-% xlabel('word position')
-% set(gca,'XTick',[1:8])
-% set(gca,'XTickLabel',{'E-2','E-1','E','E+1','P-2','P-1','P','P+1'})
-% ylabel('Normalized recall')
-% saveas(gcf, 'v1_Fig2_FinalRecallNormalized.png');
 
 %% Reorganize csv for R analysis
 clearvars -except normalized_recall
