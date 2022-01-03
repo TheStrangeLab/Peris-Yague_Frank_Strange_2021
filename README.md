@@ -25,8 +25,10 @@ Peris-Yague et al. 2021
   - [Fig. S2 Normalized Recall](#fig-s2-normalized-recall)
   - [Fig. S3 E-1, lag+1 correlation](#fig-s3-e-1-lag1-correlation)
 
-To preprocess the raw data and re-organize the data run: -
-v1SOA\_preprocessing\_alldata - v1SOA\_preprocessing\_CRP
+To preprocess the raw data and re-organize the data run:
+
+  - v1SOA\_preprocessing\_alldata
+  - v1SOA\_preprocessing\_CRP
 
 This will create output matrices that will be saved in the code folder
 and later called for the analyses.
@@ -51,15 +53,17 @@ used in an R notebook to run the statistics and obtain the figures.
 
 Once the above scripts have all been run, to obtain the statistical
 results and the figures run the following R markdown in the ‘Results’
-folder. - stats\_figures.Rmd
+folder.
+
+  - stats\_figures.Rmd
 
 # Fig. 1C Relative Recall Position by SOA
 
-![](stats_figures_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
 
 # Fig. 1D Amount of items recalled per SOA
 
-![](stats_figures_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
 
     ## ANOVA Table (type III tests)
     ## 
@@ -68,7 +72,7 @@ folder. - stats\_figures.Rmd
 
 # Fig. 2A Conditional Response Probability Curves
 
-![](stats_figures_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
 
     ## ANOVA Table (type III tests)
     ## 
@@ -159,7 +163,7 @@ folder. - stats\_figures.Rmd
 
 # Fig. 2B Conditional Response Probability Curves by Stimulus Onset Asynchrony
 
-![](stats_figures_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
 
     ## ANOVA Table (type III tests)
     ## 
@@ -197,7 +201,7 @@ folder. - stats\_figures.Rmd
 
 # Fig. 3C Conditional Response Probability Curves transitions ***to*** and ***from*** oddballs
 
-![](stats_figures_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
 
     ## ANOVA Table (type III tests)
     ## 
@@ -238,7 +242,7 @@ folder. - stats\_figures.Rmd
 
 # Fig. 4 Condutional Response Probability Curves by SOA transitions ***to*** and ***from*** oddballs
 
-![](stats_figures_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
 
     ## # A tibble: 1 × 7
     ##   .y.   group1 group2    n1    n2 statistic         p
@@ -254,7 +258,7 @@ folder. - stats\_figures.Rmd
 
 # Fig. S1 Conditional Response Probability Curves in remembered vs. forgotten oddballs
 
-![](stats_figures_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
 
 # Fig. S2 Normalized Recall
 
@@ -302,7 +306,7 @@ folder. - stats\_figures.Rmd
     ## 3 normrec E      P       0.470  odd             70    70 small     
     ## 4 normrec E      P       0.105  p1              70    70 negligible
 
-![](stats_figures_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
 
     ## # A tibble: 1 × 10
     ##   .y.    group1 group2    n1    n2 statistic    df     p p.adj p.adj.signif
@@ -316,7 +320,7 @@ folder. - stats\_figures.Rmd
 
 # Fig. S3 E-1, lag+1 correlation
 
-![](stats_figures_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
 
     ## 
     ##  Spearman's rank correlation rho
